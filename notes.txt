@@ -1,0 +1,158 @@
+====================================
+amforth 的文件
+
+amforth-5.9/lib/forth2012/core-ext/marker.frt
+amforth-5.9/lib/builds.frt
+amforth-5.9/lib/bitnames.frt
+amforth-5.9/lib/forth2012/tools/synonym.frt
+amforth-5.9/appl/arduino/blocks/ports-standard.frt
+amforth-5.9/lib/forth2012/facility/ms.frt
+但最后两行要注释掉 (analog.6 analog.7 在 arduino2009 上是没有的)
+http://amforth.sourceforge.net/TG/recipes/Values.html
+
+好像还要一个叫 value 的 word
+
+可能的文件
+amforth-5.9/lib/forth2012/core/values.frt
+
+amforth-5.9/avr8/lib/forth2012/core/avr-values.frt
+定义了 Evalue
+i2c 需要它
+
+
+cvalue
+定义一个 byte 的变量，在 RAM 中。
+
+eeprom-buffer.frt
+包含 words of
+Ebuffer:
+
+
+
+步骤：
+1. u0 marker.frt
+2. u0 builds.frt
+3. u0 bitnames.frt
+4. u0 synonym.frt
+5. u0 ms.frt
+6. u0 motor_shield.frt
+
+-------------------
+对于 ada-shield v2
+
+先安装 forth 环境
+/home/atommann/forth/amforth-5.9/appl/arduino
+
+u0 builds.frt
+u0 avr-values.frt # for Evalue
+u0 i2c-twi.frt # for i2c
+u0 i2c.frt
+u0 eeprom-buffer.frt
+u0 ada-shield.frt
+
+今天在 往 funduion 上传数据时
+居然区分大小写？
+====================================
+pwm_a digital.3  \ PWM pin for motor_a  OC2B PD3
+pwm_b digital.11 \ PWM pin for motor_b  OC2A PB3
+
+pin_dir_a digital.12 \ forward == 1, reverse == 0 PB4
+pin_dir_b digital.13 \ forward == 1, reverse == 0 PB5
+====================================
+
+http://amforth.sourceforge.net/TG/recipes/EEPROM.html
+
+Note
+Evalue was called simply value in revisions earlier than 5.3. Eallot was Ealloc and did leave the start address of the allocated memory region.
+
+注意
+Evalue 在版本 5.3 以前被称为 value. Eallot 以前叫 Ealloc，并且 Ealloc 会把分配的存储顺区域的起始地址放到堆栈上。 (怪不得 ada-motor.frt 上要用 drop 指令)
+====================================
+指令
+
+forward 1000 0 m-run
+前进
+参数：
+1000: 是速度, 范围 0 to 4095 (0x0 to 0xfff)
+0: 0#电机, 范围 0, 1, 2, 3
+
+backward 1000 0 m-run
+后退
+
+release 0 m-run
+release 1 m-run
+释放
+
+At least there are four reasonable commands:
+
+forward 800 1 m-run (speed 800 mandatory)
+backward 800 1 m-run (speed 800 mandatory)
+hold FFF 1 m-run (the motor is blocked with a power depending on 'speed' (here FFF).
+刹车
+
+release 1 m-run (the motor is powerless)
+====================================
+https://github.com/bewest/amforth/blob/master/lib/hardware/adc-pwm-demo.frt
+servo 控制
+====================================
+
+http://amforth.sourceforge.net/TG/recipes/Arrays.html#arrays
+
+如何用 array
+====================================
+
+hc-05 配置
+
+https://item.taobao.com/item.htm?spm=a230r.1.14.20.urfla1&id=5725927809&ns=1&abbucket=17#detail
+
+http://wiki.iteadstudio.com/Serial_Port_Bluetooth_Module_(Master/Slave)_:_HC-05
+
+AT+BAUD=38400,0,0
+38400, 8N1
+修改模块的 baudrate
+
+step 0:
+hciconfig
+
+step 1:
+[atommann@atommann ~]$ sudo hciconfig hci0 up
+
+step 2:
+sudo rfcomm bind 0 07:12:05:03:51:03 1
+
+可以看到
+/dev/rfcomm0
+
+如果 /dev/rfcomm0 不工作, 可以执行
+hciconfig
+hciconfig hci0 up
+====================================
+motor shield 的 I2C 地址
+
+地址解读方法1:
+   0
+A6 1
+A5 1
+A4 0
+
+A3 0
+A2 0
+A1 0
+A0 0
+
+Hex: 0x60
+
+地址解读方法2:
+A6 1
+A5 1
+A4 0
+A3 0
+
+A2 0
+A1 0
+A0 0
+   0
+
+Hex: 0xC0
+
+====================================
