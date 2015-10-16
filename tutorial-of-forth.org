@@ -1,0 +1,234 @@
+#+TITLE:  tutorial of forth
+#+AUTHOR: 謝宇恆 / XIE Yuheng
+
+* note
+* >< function application
+* >< function abstraction
+* >< data type
+* name
+*** global name
+    - variable
+      ( [word form stdin] -> address )
+    #+begin_src forth
+    variable var1
+    var1 .
+    47 var1 !
+    var1 @ .
+
+    17 constant seventeen
+    seventeen .
+    #+end_src
+
+*** global memory
+
+***** create
+      - makes a new dictionary entry
+        The new name is a Forth subroutine that will return the address of the next available space in memory.
+      #+begin_src forth
+      create global-memory-1
+      global-memory-1 .
+      here .
+
+      here .
+      16 allot
+      here .
+
+      ( cells as cell * )
+      10 cells allot
+
+      create global-memory-2 10 cells allot
+
+      : field-2-6 ( -> address ) global-memory-2 5 cells + ;
+
+      233 field-2-6 !
+      field-2-6 @
+
+
+      : variable  create   1 cells  allot ;
+      : variable  create   0  ,  ;
+
+      variable var1
+      var1 .
+      47 var1 !
+      var1 @ .
+      #+end_src
+
+***** create ... does>
+      - to write subroutines ("constructors")
+        that create custom data structures
+
+      - to implement VARIABLE in forth we use create
+        to implement CONSTANT in forth we use create ... does>
+
+      - CREATE define word that return address
+        DOES> append function body to the word
+        function body will be apply after the address get returned
+
+      #+begin_src forth
+      17 create seventeen ,
+      seventeen @ .
+
+      : cc ( number [word from stdin] -> [define word] )
+          create ,
+          does> @
+      ;
+
+      17 cc svteen
+      svteen .
+
+
+
+      : cs ( number [word from stdin] -> [define word] )
+          create ,
+        does> cr
+          @ . ." cs testing does>" cr
+      ;
+
+      17 cs svts
+      svts
+      #+end_src
+* compiler
+
+*** comma
+    #+begin_src forth
+    here .
+    233 ,
+    here .
+    here 1 cells - @ .
+
+
+    here .
+    1 c, 1 c, 1 c, 1 c,
+    1 c, 1 c, 1 c, 1 c,
+    hex
+    here 1 cells - @ . ( 1 01 01 01 01 01 01 01 )
+    decimal
+    #+end_src
+
+*** >< colon
+
+* control
+
+*** bool
+    -1 as true
+    0 as false
+    thus
+    bitwise INVERT
+    can turn false to true
+    and true true to false
+
+*** branch
+    #+begin_src forth
+    : not-zero-crying
+        0 =  invert  if
+            cr   ." not zero!"
+        then
+    ;
+
+    0 not-zero-crying
+    7 not-zero-crying
+
+    ( interpreted version )
+    false [if]
+        anything you want to say
+    [then]
+    #+end_src
+
+*** recurse
+    #+begin_src forth
+    : tuck
+      ( a b -> b a b )
+      swap  over
+    ;
+
+    : gcd
+      ( a b -> gcd )
+      ?dup  if
+        tuck  mod  recurse
+      then
+    ;
+    #+end_src
+
+*** begin until
+    #+begin_src forth
+    : countdown ( n -- )
+        begin
+            cr
+            dup . 1 - dup 0 =
+        until
+        drop
+    ;
+
+    10 countdown
+
+
+    : endless
+        begin
+            xxx
+            false
+        until
+    ;
+    #+end_src
+
+*** >< begin ... while ... repeat
+    #+begin_src forth
+
+    #+end_src
+
+*** do loop
+    #+begin_src forth
+    : by-ones ( n -- )
+        0 tuck do
+            cr dup . 1 +
+        loop
+        drop
+    ;
+
+    20 by-ones
+
+
+    : by-twos ( n -- )
+        0 tuck do
+            cr dup . 2 +
+        2 +loop
+        drop
+    ;
+
+    20 by-twos
+
+
+    : by-twos ( n -- )
+        0 do
+            cr i .
+        2 +loop
+    ;
+
+    20 by-twos
+
+    : countdown
+        0 swap do
+            cr i .
+        -1 +loop
+    ;
+
+    20 countdown
+
+
+
+    \ one may also nest loops
+    \ and access the index of the outer loop
+    \ from the inner loop
+    \ using the word j
+
+
+    : nested ( n m -- )
+        cr
+        0 do  dup ( n n -- )
+            0 do  cr  j .  i .
+            loop
+        loop
+        drop
+    ;
+
+    2 3  nested
+    #+end_src

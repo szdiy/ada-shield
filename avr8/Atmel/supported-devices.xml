@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="UTF-8"?><supported-devices product="AVR Header Files" version="">
+    <tools>
+        <tool id="AVR Include Files" name="AVR Include Files"/>
+    </tools>
+    <devices>
+<device family="mega" header="m26HVGdef.inc" line="AVR" name="ATmega26HVG" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m48HVFdef.inc" line="AVR" name="ATmega48HVF" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="pwm161def.inc" line="AVR" name="AT90PWM161" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m256RFA2def.inc" line="AVR" name="ATmega256RFA2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m128RFA2def.inc" line="AVR" name="ATmega128RFA2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m64RFA2def.inc" line="AVR" name="ATmega64RFA2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m256RFR2def.inc" line="AVR" name="ATmega256RFR2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m128RFR2def.inc" line="AVR" name="ATmega128RFR2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m64RFR2def.inc" line="AVR" name="ATmega64RFR2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m2564RFR2def.inc" line="AVR" name="ATmega2564RFR2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m1284RFR2def.inc" line="AVR" name="ATmega1284RFR2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m644RFR2def.inc" line="AVR" name="ATmega644RFR2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m32C1def.inc" line="AVR" name="ATmega32C1" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m64C1def.inc" line="AVR" name="ATmega64C1" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5831def.inc" line="AVR" name="ATA5831" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5832def.inc" line="AVR" name="ATA5832" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5833def.inc" line="AVR" name="ATA5833" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5781def.inc" line="AVR" name="ATA5781" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5782def.inc" line="AVR" name="ATA5782" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5783def.inc" line="AVR" name="ATA5783" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5272def.inc" line="AVR" name="ATA5272" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5505def.inc" line="AVR" name="ATA5505" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5702M322def.inc" line="AVR" name="ATA5702M322" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5790def.inc" line="AVR" name="ATA5790" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5795def.inc" line="AVR" name="ATA5795" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A5790Ndef.inc" line="AVR" name="ATA5790N" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A6285def.inc" line="AVR" name="ATA6285" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A6286def.inc" line="AVR" name="ATA6286" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="can128def.inc" line="AVR" name="AT90CAN128" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="can32def.inc" line="AVR" name="AT90CAN32" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="can64def.inc" line="AVR" name="AT90CAN64" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="pwm1def.inc" line="AVR" name="AT90PWM1" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="pwm216def.inc" line="AVR" name="AT90PWM216" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="pwm2bdef.inc" line="AVR" name="AT90PWM2B" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="pwm316def.inc" line="AVR" name="AT90PWM316" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="pwm3bdef.inc" line="AVR" name="AT90PWM3B" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="pwm81def.inc" line="AVR" name="AT90PWM81" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="usb1286def.inc" line="AVR" name="AT90USB1286" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="usb1287def.inc" line="AVR" name="AT90USB1287" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="usb162def.inc" line="AVR" name="AT90USB162" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="usb646def.inc" line="AVR" name="AT90USB646" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="usb647def.inc" line="AVR" name="AT90USB647" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="usb82def.inc" line="AVR" name="AT90USB82" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m128def.inc" line="AVR" name="ATmega128" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m1280def.inc" line="AVR" name="ATmega1280" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m1281def.inc" line="AVR" name="ATmega1281" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m1284def.inc" line="AVR" name="ATmega1284" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m1284Pdef.inc" line="AVR" name="ATmega1284P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m128Adef.inc" line="AVR" name="ATmega128A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m128RFA1def.inc" line="AVR" name="ATmega128RFA1" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m16def.inc" line="AVR" name="ATmega16" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m162def.inc" line="AVR" name="ATmega162" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m164Adef.inc" line="AVR" name="ATmega164A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m164Pdef.inc" line="AVR" name="ATmega164P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m164PAdef.inc" line="AVR" name="ATmega164PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m165Adef.inc" line="AVR" name="ATmega165A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m165Pdef.inc" line="AVR" name="ATmega165P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m165PAdef.inc" line="AVR" name="ATmega165PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m168def.inc" line="AVR" name="ATmega168" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A6613Cdef.inc" line="AVR" name="ATA6613C" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m168Adef.inc" line="AVR" name="ATmega168A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m168Pdef.inc" line="AVR" name="ATmega168P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m168PAdef.inc" line="AVR" name="ATmega168PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m168PBdef.inc" line="AVR" name="ATmega168PB" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m169Adef.inc" line="AVR" name="ATmega169A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m169Pdef.inc" line="AVR" name="ATmega169P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m169PAdef.inc" line="AVR" name="ATmega169PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m16Adef.inc" line="AVR" name="ATmega16A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m16HVBdef.inc" line="AVR" name="ATmega16HVB" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m16HVBrevBdef.inc" line="AVR" name="ATmega16HVBrevB" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m16HVAdef.inc" line="AVR" name="ATmega16HVA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m16M1def.inc" line="AVR" name="ATmega16M1" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m16U2def.inc" line="AVR" name="ATmega16U2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m16U4def.inc" line="AVR" name="ATmega16U4" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m2560def.inc" line="AVR" name="ATmega2560" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m2561def.inc" line="AVR" name="ATmega2561" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m32def.inc" line="AVR" name="ATmega32" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m324Adef.inc" line="AVR" name="ATmega324A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m324Pdef.inc" line="AVR" name="ATmega324P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m324PAdef.inc" line="AVR" name="ATmega324PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m325def.inc" line="AVR" name="ATmega325" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m3250def.inc" line="AVR" name="ATmega3250" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m3250Adef.inc" line="AVR" name="ATmega3250A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m3250Pdef.inc" line="AVR" name="ATmega3250P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m3250PAdef.inc" line="AVR" name="ATmega3250PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m325Adef.inc" line="AVR" name="ATmega325A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m325Pdef.inc" line="AVR" name="ATmega325P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m325PAdef.inc" line="AVR" name="ATmega325PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m328def.inc" line="AVR" name="ATmega328" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m328Pdef.inc" line="AVR" name="ATmega328P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A6614Qdef.inc" line="AVR" name="ATA6614Q" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m329def.inc" line="AVR" name="ATmega329" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m3290def.inc" line="AVR" name="ATmega3290" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m3290Adef.inc" line="AVR" name="ATmega3290A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m3290Pdef.inc" line="AVR" name="ATmega3290P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m3290PAdef.inc" line="AVR" name="ATmega3290PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m329Adef.inc" line="AVR" name="ATmega329A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m329Pdef.inc" line="AVR" name="ATmega329P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m329PAdef.inc" line="AVR" name="ATmega329PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m32Adef.inc" line="AVR" name="ATmega32A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m32HVBdef.inc" line="AVR" name="ATmega32HVB" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m32HVBrevBdef.inc" line="AVR" name="ATmega32HVBrevB" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m32M1def.inc" line="AVR" name="ATmega32M1" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m32U2def.inc" line="AVR" name="ATmega32U2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m32U4def.inc" line="AVR" name="ATmega32U4" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m48def.inc" line="AVR" name="ATmega48" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m48Adef.inc" line="AVR" name="ATmega48A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m48Pdef.inc" line="AVR" name="ATmega48P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m48PAdef.inc" line="AVR" name="ATmega48PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m48PBdef.inc" line="AVR" name="ATmega48PB" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m406def.inc" line="AVR" name="ATmega406" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m64def.inc" line="AVR" name="ATmega64" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m640def.inc" line="AVR" name="ATmega640" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m644def.inc" line="AVR" name="ATmega644" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m644Adef.inc" line="AVR" name="ATmega644A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m644Pdef.inc" line="AVR" name="ATmega644P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m644PAdef.inc" line="AVR" name="ATmega644PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m645def.inc" line="AVR" name="ATmega645" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m6450def.inc" line="AVR" name="ATmega6450" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m6450Adef.inc" line="AVR" name="ATmega6450A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m6450Pdef.inc" line="AVR" name="ATmega6450P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m645Adef.inc" line="AVR" name="ATmega645A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m645Pdef.inc" line="AVR" name="ATmega645P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m649def.inc" line="AVR" name="ATmega649" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m6490def.inc" line="AVR" name="ATmega6490" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m6490Adef.inc" line="AVR" name="ATmega6490A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m6490Pdef.inc" line="AVR" name="ATmega6490P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m649Adef.inc" line="AVR" name="ATmega649A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m649Pdef.inc" line="AVR" name="ATmega649P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m64Adef.inc" line="AVR" name="ATmega64A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m64HVE2def.inc" line="AVR" name="ATmega64HVE2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m64M1def.inc" line="AVR" name="ATmega64M1" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m8def.inc" line="AVR" name="ATmega8" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m8HVAdef.inc" line="AVR" name="ATmega8HVA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m8515def.inc" line="AVR" name="ATmega8515" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m8535def.inc" line="AVR" name="ATmega8535" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m88def.inc" line="AVR" name="ATmega88" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="A6612Cdef.inc" line="AVR" name="ATA6612C" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m88Adef.inc" line="AVR" name="ATmega88A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m88Pdef.inc" line="AVR" name="ATmega88P" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m88PAdef.inc" line="AVR" name="ATmega88PA" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m88PBdef.inc" line="AVR" name="ATmega88PB" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m8Adef.inc" line="AVR" name="ATmega8A" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="mega" header="m8U2def.inc" line="AVR" name="ATmega8U2" series="AVR mega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn10def.inc" line="AVR" name="ATtiny10" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn13def.inc" line="AVR" name="ATtiny13" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn13Adef.inc" line="AVR" name="ATtiny13A" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn167def.inc" line="AVR" name="ATtiny167" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn20def.inc" line="AVR" name="ATtiny20" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn2313def.inc" line="AVR" name="ATtiny2313" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn2313Adef.inc" line="AVR" name="ATtiny2313A" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn24def.inc" line="AVR" name="ATtiny24" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn24Adef.inc" line="AVR" name="ATtiny24A" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn25def.inc" line="AVR" name="ATtiny25" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn26def.inc" line="AVR" name="ATtiny26" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn261def.inc" line="AVR" name="ATtiny261" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn261Adef.inc" line="AVR" name="ATtiny261A" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn28def.inc" line="AVR" name="ATtiny28" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn4def.inc" line="AVR" name="ATtiny4" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn40def.inc" line="AVR" name="ATtiny40" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn4313def.inc" line="AVR" name="ATtiny4313" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn43Udef.inc" line="AVR" name="ATtiny43U" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn44def.inc" line="AVR" name="ATtiny44" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn44Adef.inc" line="AVR" name="ATtiny44A" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn441def.inc" line="AVR" name="ATtiny441" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn45def.inc" line="AVR" name="ATtiny45" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn48def.inc" line="AVR" name="ATtiny48" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn461def.inc" line="AVR" name="ATtiny461" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn461Adef.inc" line="AVR" name="ATtiny461A" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn474def.inc" line="AVR" name="ATtiny474" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn5def.inc" line="AVR" name="ATtiny5" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn84def.inc" line="AVR" name="ATtiny84" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn84Adef.inc" line="AVR" name="ATtiny84A" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn841def.inc" line="AVR" name="ATtiny841" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn85def.inc" line="AVR" name="ATtiny85" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn861def.inc" line="AVR" name="ATtiny861" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn861Adef.inc" line="AVR" name="ATtiny861A" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn87def.inc" line="AVR" name="ATtiny87" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn88def.inc" line="AVR" name="ATtiny88" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn9def.inc" line="AVR" name="ATtiny9" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn1634def.inc" line="AVR" name="ATtiny1634" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn80def.inc" line="AVR" name="ATtiny80" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="tiny" header="tn828def.inc" line="AVR" name="ATtiny828" series="AVR tiny series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega128B1def.inc" line="AVR" name="ATxmega128B1" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega256B1def.inc" line="AVR" name="ATxmega256B1" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega64B1def.inc" line="AVR" name="ATxmega64B1" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega64B3def.inc" line="AVR" name="ATxmega64B3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega128B3def.inc" line="AVR" name="ATxmega128B3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega32A4Udef.inc" line="AVR" name="ATxmega32A4U" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega16A4Udef.inc" line="AVR" name="ATxmega16A4U" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega32A4def.inc" line="AVR" name="ATxmega32A4" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega16A4def.inc" line="AVR" name="ATxmega16A4" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega32D4def.inc" line="AVR" name="ATxmega32D4" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega16D4def.inc" line="AVR" name="ATxmega16D4" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega128A1Udef.inc" line="AVR" name="ATxmega128A1U" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega64A1Udef.inc" line="AVR" name="ATxmega64A1U" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega128A1def.inc" line="AVR" name="ATxmega128A1" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega64A1def.inc" line="AVR" name="ATxmega64A1" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega256A3BUdef.inc" line="AVR" name="ATxmega256A3BU" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega256A3Bdef.inc" line="AVR" name="ATxmega256A3B" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega256A3Udef.inc" line="AVR" name="ATxmega256A3U" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega192A3Udef.inc" line="AVR" name="ATxmega192A3U" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega128A3Udef.inc" line="AVR" name="ATxmega128A3U" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega64A3Udef.inc" line="AVR" name="ATxmega64A3U" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega256A3def.inc" line="AVR" name="ATxmega256A3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega192A3def.inc" line="AVR" name="ATxmega192A3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega128A3def.inc" line="AVR" name="ATxmega128A3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega64A3def.inc" line="AVR" name="ATxmega64A3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega256D3def.inc" line="AVR" name="ATxmega256D3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega192D3def.inc" line="AVR" name="ATxmega192D3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega128D3def.inc" line="AVR" name="ATxmega128D3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega32D3def.inc" line="AVR" name="ATxmega32D3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega64D3def.inc" line="AVR" name="ATxmega64D3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega384C3def.inc" line="AVR" name="ATxmega384C3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega384D3def.inc" line="AVR" name="ATxmega384D3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega128A4Udef.inc" line="AVR" name="ATxmega128A4U" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega64A4Udef.inc" line="AVR" name="ATxmega64A4U" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega128D4def.inc" line="AVR" name="ATxmega128D4" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega64D4def.inc" line="AVR" name="ATxmega64D4" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega32X1def.inc" line="AVR" name="ATxmega32X1" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega256C3def.inc" line="AVR" name="ATxmega256C3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega192C3def.inc" line="AVR" name="ATxmega192C3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega128C3def.inc" line="AVR" name="ATxmega128C3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega32C3def.inc" line="AVR" name="ATxmega32C3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega64C3def.inc" line="AVR" name="ATxmega64C3" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega32C4def.inc" line="AVR" name="ATxmega32C4" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega16C4def.inc" line="AVR" name="ATxmega16C4" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATmXT540Sdef.inc" line="AVR" name="ATmXT540S" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATmXT540SrevAdef.inc" line="AVR" name="ATmXT540SrevA" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATmXT336Sdef.inc" line="AVR" name="ATmXT336S" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATmXT112SLdef.inc" line="AVR" name="ATmXT112SL" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATmXT224Edef.inc" line="AVR" name="ATmXT224E" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATmXT224def.inc" line="AVR" name="ATmXT224" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATmXTS200def.inc" line="AVR" name="ATmXTS200" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATmXTS200revAdef.inc" line="AVR" name="ATmXTS200revA" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega32E5def.inc" line="AVR" name="ATxmega32E5" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega16E5def.inc" line="AVR" name="ATxmega16E5" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+<device family="Xmega" header="ATxmega8E5def.inc" line="AVR" name="ATxmega8E5" series="AVR Xmega series">
+                                <tool support="ASM"/>
+                            </device>
+</devices>
+</supported-devices>

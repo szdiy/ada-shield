@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><Vsix xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="1.0.0">
+  <Identifier Id="03CB4AE1-80EA-40C7-B561-98CC87EA539C">
+    <Name>AVR macro Assembler</Name>
+    <Author>Atmel</Author>
+    <Version>2.1.39.1117</Version>
+    <Description xml:space="preserve">The AVR Assembler Toolchain Extension for Atmel Studio</Description>
+    <Locale>1033</Locale>
+    <Icon>Icons\Assembler_2_32x32x8.png</Icon>
+    <PreviewImage>Icons\asm2-200x200.png</PreviewImage>
+    <InstalledByMsi>true</InstalledByMsi>
+    <SupportedProducts>
+    <IsolatedShell Version="6.1">AtmelStudio</IsolatedShell>
+<IsolatedShell Version="6.2">AtmelStudio</IsolatedShell>
+</SupportedProducts>
+    <SupportedFrameworkRuntimeEdition MaxVersion="4.0" MinVersion="4.0"/>
+    <AllUsers>true</AllUsers>
+  </Identifier>
+  <References/>
+  <Content>
+	<CustomExtension Type="com.Atmel.AVRAssembler">avr-assembler</CustomExtension>
+	<CustomExtension Type="studio-version">studio-version.xml</CustomExtension>
+	<CustomExtension Type="ToolchainType">Native</CustomExtension>
+	<CustomExtension Type="ToolchainStatus">Primary</CustomExtension>
+  </Content>
+</Vsix>
