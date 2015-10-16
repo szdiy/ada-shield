@@ -1,0 +1,311 @@
+#+TITLE:  ada-shield
+
+* note
+
+  - DC-Motordriver for ADAFRUIT Motorshields (http://adafruit.com/products/1438)
+    MB February 2014
+    amforth 5.2 version Atmega328
+    Release v2.0
+    Changes: new numbering of motors, shields are calculateted internaly
+
+  - Motorshield Pins
+    [+ - ] 8 7 6 5 4 3 2 1          0 1 2 3 4 5
+     + = VSupply +   - = VSupply -
+     8 reserved, 7 IORRef, 6 Reset, 5 3V, 4 5V, 3 GND, 2 GND, 1 Vin
+     0 - 3 unassigned, 4 SDA, 5 SDC
+
+   - 'evalboard' is the Pollin Evalutionsboard. If you don't have one - don't worry.
+     Atmega328 Pins      Evalboard       Motorshield
+     28 PC5 (ADC5/SCL)       6               5
+     27 PC4 (ADC4/SDA)       5               4
+
+* remarks and hints
+
+  - The motorshields are controlled by I²C bus
+    also called TwoWireInterface.
+
+  - So the code relys on the 'twi.frt'
+    from the /lib/hardware.
+
+  - If you want to achieve full control over the motorshield
+    you have to deal with the PCA9685 chip.
+    This chip is designed to control 16 LEDs.
+    This explaines the naming of the registers as LED.
+
+  - Here the PCA9685 is 'abused' by the ADAFRUIT people
+    to control up to four solenoids per motorshield.
+    Four solenoids fit for either 4 DC-motors or two stepper motors (bipolar).
+
+  - You can download the data sheet for the PCA9685
+    at: www.adafruit.com/datasheets/PCA9685.pdf
+    The voltage of the DC motors may range form 6V to 12V.
+
+  - The numbering of the motors in the schematic and in the silkscreen differ.
+    I never succeed in reading a single register.
+    So I choose the 'Register Auto-Increment' method.
+    The word .regs was a mighty helper during developing.
+    You may want to comment it out.
+
+  - I didn't recognize any difference in using different prescalers
+    but I like to set it to 3.
+
+  - I use two motorshields in my project (addr C0, C2).
+    You can add more at your convenience.
+    I never dealt with subadresses or so.
+    Your at your own here.
+
+  - In my experience
+    the LED_ALL Registers
+    can be written to
+    but reading always gives NULL.
+
+  - ADAFRUIT says:
+    TB6612 MOSFET driver: with 1.2A per channel and 3A peak current capability.
+    But if you will access this 1.2A you'll need a heatsink.
+
+  - I don't need a stepper driver yet.
+    So I didn't write one. It should be easy.
+    This driver fits my personal needs.
+    Feel free to improve it and share it, please.
+
+* usage
+
+  - Number the motors of the shields successive.
+    I.e.
+    0 1 2 3 (shield0)
+    4 5 6 7 (shield1)
+    8 9 10 11 (shield2)
+    ... and so on.
+
+  - There is only one word to use to drive the DC-motors: m-run
+    Example:
+      forward 800 3 m-run
+    where forward gives the direction the motor will rotate,
+    800 is the speed the motor will drive
+    and 3 is the number of the motor
+    (the addressed shield will be set automatically).
+
+  - The maximum speed is $FFF (decimal 4095).
+    Values bigger than FFF
+    especially $1000
+    will reset the related LED
+    (try reset .regs).
+
+  - At least there are four reasonable commands:
+    forward 800 3 m-run (speed 800 mandatory)
+    backward 800 3 m-run (speed 800 mandatory)
+    hold FFF 3 m-run (the motor is blocked with a power depending on 'speed' (here FFF).
+    release 3 m-run (the motor is powerless)
+
+
+
+* names for two motorshields
+  - you may use more than two shields
+    their address will be calculated automatically
+  - Evalue for eprom
+  #+begin_src forth :tangle ada-shield.frt
+  $C0 Evalue firstShield
+  $C2 Evalue lastShield
+  -$C0 Evalue ShieldError
+  Variable shield
+  #+end_src
+
+* register name
+  #+begin_src forth :tangle ada-shield.frt
+  00 Evalue MODE1
+  01 Evalue MODE2
+  \  02 Evalue Subaddr1
+  \  03 Evalue Subaddr2
+  \  04 Evalue Subaddr3
+  \  05 Evalue ALLCALLADDR
+  \  $0E Evalue LEDAll-Address
+  \  $FD Evalue pre_scaler
+  #+end_src
+
+* commands to the PCA9685 chip
+
+*** set_autoincr
+    - set the PCA9685 in auto-increment mode
+    #+begin_src forth :tangle ada-shield.frt
+    : set_autoincr ( -- )
+        i2c.start
+        shield @ i2c.tx
+        MODE1 i2c.tx
+        %00100000 i2c.tx
+        i2c.start
+    ;
+    #+end_src
+
+*** sleep
+    - set the PCA9685 to sleep mode
+    #+begin_src forth :tangle ada-shield.frt
+    : sleep ( -- )
+        i2c.start
+        shield @ i2c.tx
+        MODE1 i2c.tx
+        %00010000 i2c.tx
+        i2c.stop
+    ;
+    #+end_src
+
+*** prescaler!
+    - set the PCA9685 prescaler
+    #+begin_src forth :tangle ada-shield.frt
+    : prescaler! ( n -- )
+        sleep
+        i2c.start
+        shield @ i2c.tx
+        $FE i2c.tx
+        i2c.tx
+        i2c.stop
+    ;
+    #+end_src
+
+*** reset
+    - reset ALL shields
+    #+begin_src forth :tangle ada-shield.frt
+    : reset ( -- )
+        i2c.start
+        0 i2c.tx        \ general address
+        %110 i2c.tx     \ reset
+        i2c.stop
+    ;
+    #+end_src
+
+* write into registers corresponding to LEDs
+
+* led
+  #+begin_src forth :tangle ada-shield.frt
+  : led ( n -- )          \ calculate reg.addr of LED Nr. n
+      4 *  6 +
+  ;
+
+  \ write one 16 bit data to two subsequent regs starting at address addr
+   : led!  ( n addr -- )
+     set_autoincr
+     shield @ i2c.tx
+     led i2c.tx                           \ reg.addr
+  \   $100 u/mod swap i2c.tx i2c.tx        \ as this is always NUll we won't need it
+     0 0 i2c.tx i2c.tx
+     $100 u/mod swap i2c.tx i2c.tx
+     i2c.stop ;
+
+  \  dealing with motor registers
+
+  \ M0 --> pwm = 8;  in2 = 9;  in1 = 10;
+  \ M1 --> pwm = 13; in2 = 12; in1 = 11;
+  \ M2 --> pwm = 2;  in2 = 3;  in1 = 4;
+  \ M3 --> pwm = 7;  in2 = 6;  in1 = 5;
+
+  \ Ebuffer from Amforth documentation by M. Trute and others
+
+  \ At this time there is a little bug in Ebuffer: Maybe it will be replaced in
+  \ future. If so you have to care about the definition of the Motortab.
+  \ : Ealloc edp swap over + to edp ;
+  \ : Ebuffer: edp value Ealloc ; ( n -- ) ( similar to buffer: from forth200x)
+
+  : e, ( addr n -- adr+cell )
+    over !e 1 cells + ;
+
+  \ Motortab hold the coresponding LED-reg.addresses of the four motors
+  24 Ebuffer: Motors
+
+  \ workaround: 2 + ... drop
+  Motors 2 + 8 e, 9 e, &10 e, &13 e, &12 e, &11 e, 2 e, 3 e, 4 e, 7 e, 6 e, 5 e, drop
+  #+end_src
+
+* set_shield
+  - claculate shield and motor for a given motornr
+  #+begin_src forth :tangle ada-shield.frt
+  : set_shield ( M-Nr -- M-Nr' )
+      4 /mod 2* firstShield +       \ calculate shieldnr and motornr
+      dup lastShield >              \ shieldnr too big?
+      IF
+          ShieldError throw
+      ELSE
+          shield !
+      THEN
+  ;
+  #+end_src
+
+* m-run & its arguments
+  #+begin_src forth :tangle ada-shield.frt
+  \ Values to write to the LED-regs for forward, backward, etc ...
+  : forward  ( -- n n ) $FFF 0 ;
+  : backward ( -- n n ) 0 $FFF ;
+  : hold     ( -- n n ) $FFF $FFF ;
+  : release  ( -- n n n ) $1000 $1000 $1000 ;
+
+  \ read the three LED-regs for a given motor Nr
+  : motor-@ ( Nr -- n n n )
+      cells 3 * Motors + 2 +
+      dup @e swap 2 +
+      dup @e swap 2 +
+      @e
+  ;
+
+  : m-run ( direction speed M-Nr -- )
+      set_shield
+      motor-@
+      2swap led!
+      rot swap led!
+      led!
+  ;
+  #+end_src
+
+* init
+  #+begin_src forth :tangle ada-shield.frt
+  : init
+      i2c.init.default
+      lastShield firstShield
+      DO
+          I shield ! 3 prescaler!
+      LOOP
+  ;
+  #+end_src
+
+
+* .regs for debug                     :no:
+  #+begin_src forth :tangle no
+  : .regs ( -- )  \ vgl Fig 22 Page 32 PCA9685 Docu
+      set_autoincr
+      shield @ 1+ i2c.tx
+      $10 4 * 5 + 0 DO i2c.rx drop LOOP
+      ." Mode1   :" i2c.rx 3 .r
+      ."     Mode2   :" i2c.rx 3 .r
+      cr
+      ." Subaddr1:" i2c.rx 3 .r
+      ."     Subaddr2:" i2c.rx 3 .r
+      ."     Subaddr3:" i2c.rx 3 .r
+      cr
+      ." LEDAl   :" i2c.rx 3 .r
+      cr
+      ." LED   ON_L  ON_H  OFF_L OFF_H "
+      $10 0 DO
+          cr I 2 .r
+          4 0 DO i2c.rx 6 .r LOOP
+      LOOP
+      i2c.start
+      shield @ i2c.tx
+      $FA i2c.tx
+      i2c.start shield 1+ @ i2c.tx
+      cr
+      ." LED_ALL (always reads Null)"
+      cr
+      ."       ON_L  ON_H  OFF_L OFF_H "
+      cr 2 spaces
+      4 0 DO i2c.rx 6 .r LOOP
+      cr
+      ." Prescaler "
+      i2c.rxn 3 .r
+      i2c.stop
+  ;
+  #+end_src
+
+* some lazyness                       :no:
+  #+begin_src forth :tangle no
+  : fd ( - n n ) forward ;
+  : bk ( - n n ) backward ;
+  : rl ( - n n n ) release ;
+  : hld ( - n n ) hold ;
+  #+end_src
