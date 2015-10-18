@@ -1,0 +1,291 @@
+#+TITLE:  ada-shield demo *^-^*
+
+* primitive-functions
+  #+begin_src forth
+  variable time-pwm:help-var
+
+  : time-pwm:turn-left ( time pwm -> [move] )
+      time-pwm:help-var !
+      forward time-pwm:help-var @ 15 * 14 / 2 m-run
+      backward time-pwm:help-var @ 3 m-run
+      ms
+      release 2 m-run
+      release 3 m-run
+  ;
+
+  : time-pwm:turn-right ( time pwm -> [move] )
+      time-pwm:help-var !
+      backward time-pwm:help-var @ 15 * 14 / 2 m-run
+      forward time-pwm:help-var @ 3 m-run
+      ms
+      release 2 m-run
+      release 3 m-run
+  ;
+
+  : time-pwm:forward ( time pwm -> [move] )
+      time-pwm:help-var !
+      forward time-pwm:help-var @ 15 * 14 / 2 m-run
+      forward time-pwm:help-var @ 3 m-run
+      ms
+      release 2 m-run
+      release 3 m-run
+  ;
+
+  : time-pwm:backward ( time pwm -> [move] )
+      time-pwm:help-var !
+      backward time-pwm:help-var @ 15 * 14 / 2 m-run
+      backward time-pwm:help-var @ 3 m-run
+      ms
+      release 2 m-run
+      release 3 m-run
+  ;
+
+  variable pwm-for-360
+  \ 1530 pwm-for-360 ! \ 80
+  \ 1430 pwm-for-360 ! \ 8.37
+  \ 1390 pwm-for-360 ! \ 8.37
+  \ 1380 pwm-for-360 ! \ 8.37
+  1385 pwm-for-360 ! \ 8.37
+
+  \ 360 左轉角
+
+  : 左轉角 ( angle -> [move] )
+      5 *
+      pwm-for-360 @
+      time-pwm:turn-left
+  ;
+
+  : 右轉角 ( angle -> [move] )
+      5 *
+      pwm-for-360 @
+      time-pwm:turn-right
+  ;
+
+  : 步前進 ( step -> [move] )
+      200 *
+      pwm-for-360 @ time-pwm:forward
+  ;
+
+  : 步後退 ( step -> [move] )
+      200 *
+      pwm-for-360 @ time-pwm:backward
+  ;
+
+  : 提筆 ( -> )
+    300 ms
+    1350 OCR1A high!
+    400 ms
+  ;
+
+  : 落筆 ( -> )
+    300 ms
+    1105 OCR1A high!
+    400 ms
+  ;
+
+  : servo-init
+      1 1 lshift DDRB or!
+      20000 ICR1 high!
+
+      1 7 lshift
+      1 1 lshift or
+      TCCR1A c!
+
+      1 4 lshift
+      1 1 lshift or
+      TCCR1B c!
+
+      提筆
+  ;
+
+  : 微秒稍等 ms ;
+  #+end_src
+
+* HIT
+  #+begin_src forth
+  : 口字旁
+    2 步前進
+    落筆     2 步前進
+    90 右轉角
+             2 步前進
+    90 右轉角
+             2 步前進
+    90 右轉角
+             2 步前進
+    提筆
+             2 步後退
+    90 右轉角
+  ;
+
+  : 人字頭
+    15 右轉角
+             3 步前進
+    40 右轉角
+    落筆     2 步前進
+    300 微秒稍等
+    75 右轉角
+             2 步前進
+    提筆
+             2 步後退
+  ;
+
+  : 寫個一
+    90 右轉角
+             2 步前進
+    落筆
+    140 左轉角
+             2 步前進
+    提筆
+             2 步後退
+  ;
+
+  : 口字底
+    90 右轉角
+             1 步前進
+    落筆
+             2 步前進
+    提筆
+             2 步後退
+    90 左轉角
+    落筆
+             2 步前進
+    90 右轉角
+             2 步前進
+    300 微秒稍等
+    90 右轉角
+    落筆
+             2 步前進
+    提筆
+             2 步後退
+             1 步後退
+    90 右轉角
+  ;
+
+  : 哈
+    口字旁
+    人字頭
+    寫個一
+    口字底
+  ;
+
+
+  : 短橫
+    20 右轉角
+             4 步前進
+    70 右轉角
+    落筆
+             2 步前進
+    提筆
+  ;
+
+  : 豎
+             1 步後退
+    落筆
+    90 右轉角
+             3 步前進
+    提筆
+  ;
+
+  : 底部長橫
+    90 右轉角
+             2 步前進
+    落筆
+             4 步後退
+    提筆
+    90 右轉角
+    300 微秒稍等
+    25 右轉角
+  ;
+
+  : 工
+    短橫
+    豎
+    底部長橫
+  ;
+
+  : 中部長橫
+          3 步前進
+    落筆
+    90 右轉角
+          4 步前進
+    提筆
+          2 步後退
+    90 左轉角
+  ;
+
+  : 丿
+          1 步前進
+    落筆
+          3 步後退
+    45 右轉角
+          3 步後退
+    提筆
+          3 步前進
+  ;
+
+  : 乀
+    89 左轉角
+    落筆
+          3 步後退
+    提筆
+  ;
+
+  : 小車閃開
+    5 步後退
+  ;
+
+  : 大
+    中部長橫
+    丿
+    乀
+    小車閃開
+  ;
+
+  哈 工 大
+  #+end_src
+
+* 小魚
+  #+begin_src forth
+  : 小魚的脊背
+    30 右轉角
+    落筆
+       4 步前進
+    30 右轉角
+       2 步前進
+    30 右轉角
+       3 步前進
+    45 右轉角
+       2 步前進
+    提筆
+  ;
+
+  : 小魚的肚子
+    85 右轉角
+    落筆
+       2 步前進
+    45 右轉角
+       3 步前進
+    30 右轉角
+       4 步前進
+    提筆
+  ;
+
+  : 小魚的眼睛
+    155 右轉角
+        6 步前進
+    落筆
+        360 右轉角
+    提筆
+  ;
+
+  : 小車走開
+    4 步前進
+  ;
+
+  : 小魚
+    小魚的脊背
+    小魚的肚子
+    小魚的眼睛
+    小車走開
+  ;
+  #+end_src
