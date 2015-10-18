@@ -3,7 +3,11 @@
 
 * note
 * >< function application
-* >< function abstraction
+* non-named function
+  #+begin_src forth
+  :noname ." kkk kkk kkk" cr ;
+  dup execute execute
+  #+end_src
 * >< data type
 * name
 *** global name
@@ -177,6 +181,31 @@
 
 *** do loop
     #+begin_src forth
+    \ Counted Loops
+
+    \ C:
+    \   for(i=0;i<10;i++) {
+    \     foo();
+    \   }
+
+    \ AmForth:
+    \ 10 0 do
+    \     foo
+    \ loop
+
+    \ If the loop increment is not 1,
+    \ Forth uses the word +loop instead of loop:
+
+    \ C:
+    \   for(i=0;i<10;i+2) {
+    \     foo();
+    \   }
+
+    \ AmForth:
+    \ 10 0 do
+    \     foo 2
+    \ +loop
+
     : by-ones ( n -- )
         0 tuck do
             cr dup . 1 +
@@ -186,7 +215,6 @@
 
     20 by-ones
 
-
     : by-twos ( n -- )
         0 tuck do
             cr dup . 2 +
@@ -195,7 +223,6 @@
     ;
 
     20 by-twos
-
 
     : by-twos ( n -- )
         0 do
@@ -213,13 +240,10 @@
 
     20 countdown
 
-
-
     \ one may also nest loops
     \ and access the index of the outer loop
     \ from the inner loop
     \ using the word j
-
 
     : nested ( n m -- )
         cr
@@ -232,3 +256,6 @@
 
     2 3  nested
     #+end_src
+
+
+

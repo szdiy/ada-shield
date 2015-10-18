@@ -1,8 +1,4 @@
-\ pre ANS94 Forth. <builds .. does> instead of create does>
-\
 : <builds (create) reveal -1 , ;
-
-\ EEPROM based values
 
 : Evalue ( n -- )
     (value)
@@ -12,31 +8,110 @@
     ehere dup cell+ to ehere !e
 ;
 
+\ TWI
+&189 constant TWAMR     \ TWI (Slave) Address Mask Register
+  $FE constant TWAMR_TWAM \
+&184 constant TWBR      \ TWI Bit Rate register
 &188 constant TWCR      \ TWI Control Register
+  $80 constant TWCR_TWINT \ TWI Interrupt Flag
+  $40 constant TWCR_TWEA \ TWI Enable Acknowledge Bit
+  $20 constant TWCR_TWSTA \ TWI Start Condition Bit
+  $10 constant TWCR_TWSTO \ TWI Stop Condition Bit
+  $08 constant TWCR_TWWC \ TWI Write Collition Flag
+  $04 constant TWCR_TWEN \ TWI Enable Bit
+  $01 constant TWCR_TWIE \ TWI Interrupt Enable
 &185 constant TWSR      \ TWI Status Register
+  $F8 constant TWSR_TWS \ TWI Status
+  $03 constant TWSR_TWPS \ TWI Prescaler
+&187 constant TWDR      \ TWI Data register
+&186 constant TWAR      \ TWI (Slave) Address register
+  $FE constant TWAR_TWA \ TWI (Slave) Address register Bits
+  $01 constant TWAR_TWGCE \ TWI General Call Recognition Enable Bit
 
-\ Code: Matthias Trute
-\ Text: M.Kalus
+\ TIMER_COUNTER_1
+&111 constant TIMSK1    \ Timer/Counter Interrupt Mask Register
+  $20 constant TIMSK1_ICIE1 \ Timer/Counter1 Input Capture Interrupt Enable
+  $04 constant TIMSK1_OCIE1B \ Timer/Counter1 Output CompareB Match Interrupt Enable
+  $02 constant TIMSK1_OCIE1A \ Timer/Counter1 Output CompareA Match Interrupt Enable
+  $01 constant TIMSK1_TOIE1 \ Timer/Counter1 Overflow Interrupt Enable
+&54 constant TIFR1      \ Timer/Counter Interrupt Flag register
+  $20 constant TIFR1_ICF1 \ Input Capture Flag 1
+  $04 constant TIFR1_OCF1B \ Output Compare Flag 1B
+  $02 constant TIFR1_OCF1A \ Output Compare Flag 1A
+  $01 constant TIFR1_TOV1 \ Timer/Counter1 Overflow Flag
+&128 constant TCCR1A    \ Timer/Counter1 Control Register A
+  $C0 constant TCCR1A_COM1A \ Compare Output Mode 1A, bits
+  $30 constant TCCR1A_COM1B \ Compare Output Mode 1B, bits
+  $03 constant TCCR1A_WGM1 \ Waveform Generation Mode
+&129 constant TCCR1B    \ Timer/Counter1 Control Register B
+  $80 constant TCCR1B_ICNC1 \ Input Capture 1 Noise Canceler
+  $40 constant TCCR1B_ICES1 \ Input Capture 1 Edge Select
+  $18 constant TCCR1B_WGM1 \ Waveform Generation Mode
+  $07 constant TCCR1B_CS1 \ Prescaler source of Timer/Counter 1
+&130 constant TCCR1C    \ Timer/Counter1 Control Register C
+  $80 constant TCCR1C_FOC1A \
+  $40 constant TCCR1C_FOC1B \
+&132 constant TCNT1     \ Timer/Counter1  Bytes
+&136 constant OCR1A     \ Timer/Counter1 Output Compare Register  Bytes
+&138 constant OCR1B     \ Timer/Counter1 Output Compare Register  Bytes
+&134 constant ICR1      \ Timer/Counter1 Input Capture Register  Bytes
+&67 constant GTCCR      \ General Timer/Counter Control Register
+  $80 constant GTCCR_TSM \ Timer/Counter Synchronization Mode
+  $01 constant GTCCR_PSRSYNC \ Prescaler Reset Timer/Counter1 and Timer/Counter0
 
-\ A named port pin puts a bitmask on stack, wherin the set bit indicates which
-\ bit of the port register corresponds to the pin.
-\ And then puts the address of its port on stack too.
+\ PORTB
+&37 constant PORTB      \ Port B Data Register
+&36 constant DDRB       \ Port B Data Direction Register
+&35 constant PINB       \ Port B Input Pins
 
-\ Use it this way:
-\ PORTD 7 portpin: PD.7  ( define portD pin #7)
-\ PD.7 high              ( turn portD pin #7 on, i.e. set it high-level)
-\ PD.7 low               ( turn portD pin #7 off, i.e. set it low-level)
-\ PD.7 <ms> pulse        ( turn portD pin #7 for <ms> high and low)
-\ the following words are for "real" IO pins only
-\ PD.7 pin_output        ( set DDRD so that portD pin #7 is output)
-\ PD.7 pin_input         ( set DDRD so that portD pin #7 is input)
-\ PD.7 pin_high?         ( true if pinD pin #7 is high)
-\ PD.7 pin_low?          ( true if pinD pin #7 is low)
-\
-\ multi bit operation
-\ PORTD F bitmask: PD.F  ( define the lower nibble of port d )
-\ PD.F pin@              ( get the lower nibble bits )
-\ 5 PD.F pin!            ( put the lower nibble bits, do not change the others )
+\ TIMER_COUNTER_0
+&72 constant OCR0B      \ Timer/Counter0 Output Compare Register
+&71 constant OCR0A      \ Timer/Counter0 Output Compare Register
+&70 constant TCNT0      \ Timer/Counter0
+&69 constant TCCR0B     \ Timer/Counter Control Register B
+  $80 constant TCCR0B_FOC0A \ Force Output Compare A
+  $40 constant TCCR0B_FOC0B \ Force Output Compare B
+  $08 constant TCCR0B_WGM02 \
+  $07 constant TCCR0B_CS0 \ Clock Select
+&68 constant TCCR0A     \ Timer/Counter  Control Register A
+  $C0 constant TCCR0A_COM0A \ Compare Output Mode, Phase Correct PWM Mode
+  $30 constant TCCR0A_COM0B \ Compare Output Mode, Fast PWm
+  $03 constant TCCR0A_WGM0 \ Waveform Generation Mode
+&110 constant TIMSK0    \ Timer/Counter0 Interrupt Mask Register
+  $04 constant TIMSK0_OCIE0B \ Timer/Counter0 Output Compare Match B Interrupt Enable
+  $02 constant TIMSK0_OCIE0A \ Timer/Counter0 Output Compare Match A Interrupt Enable
+  $01 constant TIMSK0_TOIE0 \ Timer/Counter0 Overflow Interrupt Enable
+&53 constant TIFR0      \ Timer/Counter0 Interrupt Flag register
+  $04 constant TIFR0_OCF0B \ Timer/Counter0 Output Compare Flag 0B
+  $02 constant TIFR0_OCF0A \ Timer/Counter0 Output Compare Flag 0A
+  $01 constant TIFR0_TOV0 \ Timer/Counter0 Overflow Flag
+
+\ Interrupts
+&2  constant INT0Addr \ External Interrupt Request 0
+&4  constant INT1Addr \ External Interrupt Request 1
+&6  constant PCINT0Addr \ Pin Change Interrupt Request 0
+&8  constant PCINT1Addr \ Pin Change Interrupt Request 0
+&10  constant PCINT2Addr \ Pin Change Interrupt Request 1
+&12  constant WDTAddr \ Watchdog Time-out Interrupt
+&14  constant TIMER2_COMPAAddr \ Timer/Counter2 Compare Match A
+&16  constant TIMER2_COMPBAddr \ Timer/Counter2 Compare Match A
+&18  constant TIMER2_OVFAddr \ Timer/Counter2 Overflow
+&20  constant TIMER1_CAPTAddr \ Timer/Counter1 Capture Event
+&22  constant TIMER1_COMPAAddr \ Timer/Counter1 Compare Match A
+&24  constant TIMER1_COMPBAddr \ Timer/Counter1 Compare Match B
+&26  constant TIMER1_OVFAddr \ Timer/Counter1 Overflow
+&28  constant TIMER0_COMPAAddr \ TimerCounter0 Compare Match A
+&30  constant TIMER0_COMPBAddr \ TimerCounter0 Compare Match B
+&32  constant TIMER0_OVFAddr \ Timer/Couner0 Overflow
+&34  constant SPI__STCAddr \ SPI Serial Transfer Complete
+&36  constant USART__RXAddr \ USART Rx Complete
+&38  constant USART__UDREAddr \ USART, Data Register Empty
+&40  constant USART__TXAddr \ USART Tx Complete
+&42  constant ADCAddr \ ADC Conversion Complete
+&44  constant EE_READYAddr \ EEPROM Ready
+&46  constant ANALOG_COMPAddr \ Analog Comparator
+&48  constant TWIAddr \ Two-wire Serial Interface
+&50  constant SPM_ReadyAddr \ Store Program Memory Read
 
 : bitmask: ( C: "ccc" portadr bmask -- ) ( R: -- pinmask portadr )
   <builds
@@ -50,8 +125,6 @@
     3 rshift +             \ byte address
     r> bitmask:            \ portaddr may have changed
 ;
-
-
 
 \ Turn a port pin on, dont change the others.
 : high ( pinmask portadr -- )
@@ -72,7 +145,6 @@
     swap ( -- new-value port)
     c!
 ;
-
 
 \ synonym off low
 \ synonym on  high
@@ -121,7 +193,6 @@
     c!
 ;
 
-
 \ Only for PORTx bits,
 \ because address of DDRx is one less than address of PORTx.
 
@@ -163,42 +234,10 @@
   2dup pin_input low
 ;
 
-
 \ enable the pull up resistor
 : pin_pullup_on ( pinmask portaddr -- )
   2dup pin_input high
 ;
-
-\ basic I2C operations, uses 7bit bus addresses
-\ uses the TWI module of the Atmega's.
-
-\ provides public commands
-\  i2c.ping?         -- checks if addr is active
-\  i2c.init          -- flexible configuration setup. see below
-\  i2c.init.default  -- generic slow speed setup
-\  i2c.off           -- turns off I2C
-
-\ and more internal commands
-\  i2c.wait          -- wait for the current i2c transaction
-\  i2c.start         -- send start condition
-\  i2c.stop          -- send stop condition
-\  i2c.tx            -- send one byte, wait for ACK
-\  i2c.rx            -- receive one byte with ACK
-\  i2c.rxn           .. receive one byte with NACK
-\  i2c.status        -- get the last i2c status
-
-\
-\ i2c (SCL) clock speed = CPU_clock/(16 + 2*bitrateregister*(4^prescaler))
-\ following the SCL clock speed in Hz for an 8Mhz device
-\      bitrate register (may be any value between 0 and 255)
-\               4      8       16      32      64      128    255
-\      prescaler
-\      /1    333.333 250.000 166.667 100.000  55.556  29.412  15.209
-\      /4    166.667 100.000  55.556  29.412  15.152   7.692   3.891
-\      /16    55.556  29.412  15.152   7.692   3.876   1.946     978
-\      /64    15.152   7.692   3.876   1.946     975     488     245
-\
-\
 
 -4000 constant i2c.timeout  \ exception number for timeout
 10000 Evalue   i2c.maxticks \ # of checks until timeout is reached
@@ -259,8 +298,6 @@ TWCR 5 portpin: i2c.sta
     \ no wait for completion.
 ;
 
-
-
 \ process the data
 : i2c.action
     %10000100 or TWCR c! \ _BV(i2cNT)|_BV(TWEN)
@@ -300,76 +337,8 @@ TWCR 5 portpin: i2c.sta
     i2c.stop
 ;
 
-\ basic I2C operations, uses 7bit bus addresses
-\ uses the TWI module of the Atmega's.
-
-\ provides public commands
-
-\  i2c.begin         -- starts a I2C bus cycle
-\  i2c.end           -- ends a I2C bus cycle
-\  i2c.n>            -- send n bytes to device   (n> means from data stack)
-\  i2c.>n            -- read n bytes from device (>n means to data stack)
-
-\ convert the bus address into a sendable byte
-\ the address bits are the upper 7 ones,
-\ the LSB is the read/write bit.
-
-: i2c.wr 2* ;
-: i2c.rd 2* 1+ ;
-
-\ aquire the bus and select a device
-: i2c.begin ( hwid -- )
-  dup i2c.current !
-  i2c.start i2c.wr i2c.tx
-;
-\ release the bus and deselect the device
-: i2c.end ( -- )
-  i2c.stop
-  0 i2c.current !
-;
-
-\ tranfser data from/to data stack
-
-\ send n bytes to addr
-: i2c.n> ( xn .. x1 N addr -- )
-  i2c.begin
-    0 ?do     \ uses N
-      i2c.tx  \ send x1 ... xn
-    loop
-  i2c.end
-;
-
-\ complex and flexible transaction word
-\ send m bytes x1..xm and fetch n bytes y1..yn afterwards
-: i2c.m>n ( n xm .. x1 m addr -- x1 .. xn )
-  dup i2c.begin >r
-    0 ?do i2c.tx loop \ sends m bytes
-    i2c.start         \ repeated start
-    r> i2c.rd i2c.tx  \ re-send addr, now with read bit set
-    1- 0 ?do i2c.rx loop i2c.rxn \ read x1 .. xn
-  i2c.end
-;
-
-\ fetch n bytes
-: i2c.>n ( N addr -- x1 .. xn )
-  2>r 0 2r> i2c.m>n
-;
-
-\ internal EEPROM routines. They do not operate on external
-\ storage
-
-\ Ebuffer: is the EEPROM pendant to buffer: from forth200x
-\ it takes the number of bytes to allocate in RAM and parses
-\ SOURCE for the name to give to the buffer
-
-\ Eallot is the EEPROM pendant for allot from the core word set
-\ it allocates n bytes of EEPROM storage and return the starting
-\ address.
-
 : Eallot  ehere + to ehere ;
 : Ebuffer: ehere constant Eallot ;
-
-\ for usage see http://amforth.sourceforge.net/TG/recipes/EEPROM.html
 
 $C0 Evalue firstShield
 $C2 Evalue lastShield
@@ -377,13 +346,6 @@ $C2 Evalue lastShield
 Variable shield
 
 00 Evalue MODE1
-01 Evalue MODE2
-\  02 Evalue Subaddr1
-\  03 Evalue Subaddr2
-\  04 Evalue Subaddr3
-\  05 Evalue ALLCALLADDR
-\  $0E Evalue LEDAll-Address
-\  $FD Evalue pre_scaler
 
 : set_autoincr ( -- )
     i2c.start
@@ -412,7 +374,7 @@ Variable shield
 
 : reset ( -- )
     i2c.start
-    0 i2c.tx        \ general address
+    0    i2c.tx     \ general address
     %110 i2c.tx     \ reset
     i2c.stop
 ;
@@ -422,28 +384,22 @@ Variable shield
 ;
 
 \ write one 16 bit data to two subsequent regs starting at address addr
- : led!  ( n addr -- )
-   set_autoincr
-   shield @ i2c.tx
-   led i2c.tx                           \ reg.addr
-\   $100 u/mod swap i2c.tx i2c.tx        \ as this is always NUll we won't need it
-   0 0 i2c.tx i2c.tx
-   $100 u/mod swap i2c.tx i2c.tx
-   i2c.stop ;
+: led!  ( n addr -- )
+    set_autoincr
+    shield @ i2c.tx
+    led i2c.tx                           \ reg.addr
+    \ $100 u/mod swap i2c.tx i2c.tx        \ as this is always NUll we won't need it
+    0 0 i2c.tx i2c.tx
+    $100 u/mod swap i2c.tx i2c.tx
+    i2c.stop
+;
 
-\  dealing with motor registers
+\ dealing with motor registers
 
 \ M0 --> pwm = 8;  in2 = 9;  in1 = 10;
 \ M1 --> pwm = 13; in2 = 12; in1 = 11;
 \ M2 --> pwm = 2;  in2 = 3;  in1 = 4;
 \ M3 --> pwm = 7;  in2 = 6;  in1 = 5;
-
-\ Ebuffer from Amforth documentation by M. Trute and others
-
-\ At this time there is a little bug in Ebuffer: Maybe it will be replaced in
-\ future. If so you have to care about the definition of the Motortab.
-\ : Ealloc edp swap over + to edp ;
-\ : Ebuffer: edp value Ealloc ; ( n -- ) ( similar to buffer: from forth200x)
 
 : e, ( addr n -- adr+cell )
   over !e 1 cells + ;
@@ -452,16 +408,21 @@ Variable shield
 24 Ebuffer: Motors
 
 \ workaround: 2 + ... drop
-Motors 2 + 8 e, 9 e, &10 e, &13 e, &12 e, &11 e, 2 e, 3 e, 4 e, 7 e, 6 e, 5 e, drop
+Motors 2 +
+       8 e,   9 e, &10 e,
+     &13 e, &12 e, &11 e,
+       2 e,   3 e,   4 e,
+       7 e,   6 e,   5 e,
+drop
 
 : set_shield ( M-Nr -- M-Nr' )
     4 /mod 2* firstShield +       \ calculate shieldnr and motornr
     dup lastShield >              \ shieldnr too big?
-    IF
+    if
         ShieldError throw
-    ELSE
+    else
         shield !
-    THEN
+    then
 ;
 
 \ Values to write to the LED-regs for forward, backward, etc ...
@@ -489,7 +450,10 @@ Motors 2 + 8 e, 9 e, &10 e, &13 e, &12 e, &11 e, 2 e, 3 e, 4 e, 7 e, 6 e, 5 e, d
 : init
     i2c.init.default
     lastShield firstShield
-    DO
+    do
         I shield ! 3 prescaler!
-    LOOP
+    loop
 ;
+
+\ a trivial multitasking friendly ms
+: ms 0 ?do pause 1ms loop ;

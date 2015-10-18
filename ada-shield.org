@@ -46,9 +46,12 @@
     6. Clear files (except backup)
        make uno.clr
 
-*** tool
+*** uploader
 
-    alias u0='/home/xyh/ada-shield/tools/amforth-shell.py -p /dev/ttyACM0'
+    - used in shell
+      alias u0='/home/xyh/ada-shield/tools/amforth-shell.py -p /dev/ttyACM0'
+      do not use 'AMFORTH_LIB' the shell variable
+      use relative path instead
 
 *** my usage
 
@@ -58,46 +61,7 @@
 
 *** atomman
 
-***** amforth 的文件
-
-    amforth-5.9/lib/forth2012/core-ext/marker.frt
-    amforth-5.9/lib/builds.frt
-    amforth-5.9/lib/bitnames.frt
-    amforth-5.9/lib/forth2012/tools/synonym.frt
-    amforth-5.9/appl/arduino/blocks/ports-standard.frt
-    amforth-5.9/lib/forth2012/facility/ms.frt
-    但最后两行要注释掉 (analog.6 analog.7 在 arduino2009 上是没有的)
-    http://amforth.sourceforge.net/TG/recipes/Values.html
-
-    好像还要一个叫 value 的 word
-
-    可能的文件
-    amforth-5.9/lib/forth2012/core/values.frt
-
-    amforth-5.9/avr8/lib/forth2012/core/avr-values.frt
-    定义了 Evalue
-    i2c 需要它
-
-
-    cvalue
-    定义一个 byte 的变量，在 RAM 中。
-
-    eeprom-buffer.frt
-    包含 words of
-    Ebuffer:
-
-    步骤：
-    1. u0 marker.frt
-    2. u0 builds.frt
-    3. u0 bitnames.frt
-    4. u0 synonym.frt
-    5. u0 ms.frt
-    6. u0 motor_shield.frt
-
-***** 对于 ada-shield v2
-
-      - 先安装 forth 环境
-        /home/atommann/forth/amforth-5.9/appl/arduino
+***** ada-shield
 
       - u0 builds.frt
         u0 avr-values.frt # for Evalue
@@ -105,17 +69,6 @@
         u0 i2c.frt
         u0 eeprom-buffer.frt
         u0 ada-shield.frt
-
-      - 今天在 往 funduion 上传数据时
-        居然区分大小写？
-
-        ====================================
-        pwm_a digital.3  \ PWM pin for motor_a  OC2B PD3
-        pwm_b digital.11 \ PWM pin for motor_b  OC2A PB3
-
-        pin_dir_a digital.12 \ forward == 1, reverse == 0 PB4
-        pin_dir_b digital.13 \ forward == 1, reverse == 0 PB5
-        ====================================
 
 ***** Evalue
 
@@ -130,27 +83,27 @@
         并且 Ealloc 会把分配的存储顺区域的起始地址放到堆栈上。 (怪不得 ada-motor.frt 上要用 drop 指令)
 
       - 指令
-        forward 1000 0 m-run
+        forward 1000 2 m-run
         前进
         参数：
         1000: 是速度, 范围 0 to 4095 (0x0 to 0xfff)
         0: 0#电机, 范围 0, 1, 2, 3
 
-        backward 1000 0 m-run
+        backward 1000 2 m-run
         后退
 
-        release 0 m-run
-        release 1 m-run
+        release 2 m-run
+        release 3 m-run
         释放
 
         At least there are four reasonable commands:
 
-        forward 800 1 m-run (speed 800 mandatory)
-        backward 800 1 m-run (speed 800 mandatory)
-        hold FFF 1 m-run (the motor is blocked with a power depending on 'speed' (here FFF).
+        forward 800 3 m-run (speed 800 mandatory)
+        backward 800 3 m-run (speed 800 mandatory)
+        hold FFF 3 m-run (the motor is blocked with a power depending on 'speed' (here FFF).
         刹车
 
-        release 1 m-run (the motor is powerless)
+        release 3 m-run (the motor is powerless)
 
       - https://github.com/bewest/amforth/blob/master/lib/hardware/adc-pwm-demo.frt
         servo 控制
@@ -293,7 +246,7 @@
 
     - There is only one word to use to drive the DC-motors: m-run
       Example:
-        forward 800 0 m-run
+        forward 800 2 m-run
       where forward gives the direction the motor will rotate,
       800 is the speed the motor will drive
       and 3 is the number of the motor
@@ -311,20 +264,22 @@
       hold FFF 3 m-run (the motor is blocked with a power depending on 'speed' (here FFF).
       release 3 m-run (the motor is powerless)
 
+
+
 * dependence
 
 *** lib/builds.frt
+    - pre ANS94 Forth
+      <builds .. does>
+      instead of
+      create .. does>
     #+begin_src forth :tangle ada-shield.frt
-    \ pre ANS94 Forth. <builds .. does> instead of create does>
-    \
     : <builds (create) reveal -1 , ;
     #+end_src
 
 *** avr8/lib/forth2012/core/avr-values.frt
-    - for Evalue
+    - EEPROM based values
     #+begin_src forth :tangle ada-shield.frt
-    \ EEPROM based values
-
     : Evalue ( n -- )
         (value)
         ehere ,
@@ -333,340 +288,389 @@
         ehere dup cell+ to ehere !e
     ;
     #+end_src
+*** avr8/devices/atmega328p/atmega328p.frt
+***** note
+      - Partname: ATmega328P
+        generated automatically
 
-*** mini atmega328p
-    #+begin_src forth :tangle ada-shield.frt
-    &188 constant TWCR      \ TWI Control Register
-    &185 constant TWSR      \ TWI Status Register
-    #+end_src
-*** avr8/devices/atmega328p/atmega328p.frt :no:
-    #+begin_src forth :tangle no
-    \ Partname: ATmega328P
-    \ generated automatically
+***** USART0                          :no:
+      #+begin_src forth :tangle no
+      \ USART0
+      &198 constant UDR0      \ USART I/O Data Register
+      &192 constant UCSR0A    \ USART Control and Status Register A
+        $80 constant UCSR0A_RXC0 \ USART Receive Complete
+        $40 constant UCSR0A_TXC0 \ USART Transmitt Complete
+        $20 constant UCSR0A_UDRE0 \ USART Data Register Empty
+        $10 constant UCSR0A_FE0 \ Framing Error
+        $08 constant UCSR0A_DOR0 \ Data overRun
+        $04 constant UCSR0A_UPE0 \ Parity Error
+        $02 constant UCSR0A_U2X0 \ Double the USART transmission speed
+        $01 constant UCSR0A_MPCM0 \ Multi-processor Communication Mode
+      &193 constant UCSR0B    \ USART Control and Status Register B
+        $80 constant UCSR0B_RXCIE0 \ RX Complete Interrupt Enable
+        $40 constant UCSR0B_TXCIE0 \ TX Complete Interrupt Enable
+        $20 constant UCSR0B_UDRIE0 \ USART Data register Empty Interrupt Enable
+        $10 constant UCSR0B_RXEN0 \ Receiver Enable
+        $08 constant UCSR0B_TXEN0 \ Transmitter Enable
+        $04 constant UCSR0B_UCSZ02 \ Character Size
+        $02 constant UCSR0B_RXB80 \ Receive Data Bit 8
+        $01 constant UCSR0B_TXB80 \ Transmit Data Bit 8
+      &194 constant UCSR0C    \ USART Control and Status Register C
+        $C0 constant UCSR0C_UMSEL0 \ USART Mode Select
+        $30 constant UCSR0C_UPM0 \ Parity Mode Bits
+        $08 constant UCSR0C_USBS0 \ Stop Bit Select
+        $06 constant UCSR0C_UCSZ0 \ Character Size
+        $01 constant UCSR0C_UCPOL0 \ Clock Polarity
+      &196 constant UBRR0     \ USART Baud Rate Register  Bytes
+      #+end_src
 
-    \ USART0
-    &198 constant UDR0      \ USART I/O Data Register
-    &192 constant UCSR0A    \ USART Control and Status Register A
-      $80 constant UCSR0A_RXC0 \ USART Receive Complete
-      $40 constant UCSR0A_TXC0 \ USART Transmitt Complete
-      $20 constant UCSR0A_UDRE0 \ USART Data Register Empty
-      $10 constant UCSR0A_FE0 \ Framing Error
-      $08 constant UCSR0A_DOR0 \ Data overRun
-      $04 constant UCSR0A_UPE0 \ Parity Error
-      $02 constant UCSR0A_U2X0 \ Double the USART transmission speed
-      $01 constant UCSR0A_MPCM0 \ Multi-processor Communication Mode
-    &193 constant UCSR0B    \ USART Control and Status Register B
-      $80 constant UCSR0B_RXCIE0 \ RX Complete Interrupt Enable
-      $40 constant UCSR0B_TXCIE0 \ TX Complete Interrupt Enable
-      $20 constant UCSR0B_UDRIE0 \ USART Data register Empty Interrupt Enable
-      $10 constant UCSR0B_RXEN0 \ Receiver Enable
-      $08 constant UCSR0B_TXEN0 \ Transmitter Enable
-      $04 constant UCSR0B_UCSZ02 \ Character Size
-      $02 constant UCSR0B_RXB80 \ Receive Data Bit 8
-      $01 constant UCSR0B_TXB80 \ Transmit Data Bit 8
-    &194 constant UCSR0C    \ USART Control and Status Register C
-      $C0 constant UCSR0C_UMSEL0 \ USART Mode Select
-      $30 constant UCSR0C_UPM0 \ Parity Mode Bits
-      $08 constant UCSR0C_USBS0 \ Stop Bit Select
-      $06 constant UCSR0C_UCSZ0 \ Character Size
-      $01 constant UCSR0C_UCPOL0 \ Clock Polarity
-    &196 constant UBRR0     \ USART Baud Rate Register  Bytes
-    \ TWI
-    &189 constant TWAMR     \ TWI (Slave) Address Mask Register
-      $FE constant TWAMR_TWAM \
-    &184 constant TWBR      \ TWI Bit Rate register
-    &188 constant TWCR      \ TWI Control Register
-      $80 constant TWCR_TWINT \ TWI Interrupt Flag
-      $40 constant TWCR_TWEA \ TWI Enable Acknowledge Bit
-      $20 constant TWCR_TWSTA \ TWI Start Condition Bit
-      $10 constant TWCR_TWSTO \ TWI Stop Condition Bit
-      $08 constant TWCR_TWWC \ TWI Write Collition Flag
-      $04 constant TWCR_TWEN \ TWI Enable Bit
-      $01 constant TWCR_TWIE \ TWI Interrupt Enable
-    &185 constant TWSR      \ TWI Status Register
-      $F8 constant TWSR_TWS \ TWI Status
-      $03 constant TWSR_TWPS \ TWI Prescaler
-    &187 constant TWDR      \ TWI Data register
-    &186 constant TWAR      \ TWI (Slave) Address register
-      $FE constant TWAR_TWA \ TWI (Slave) Address register Bits
-      $01 constant TWAR_TWGCE \ TWI General Call Recognition Enable Bit
-    \ TIMER_COUNTER_1
-    &111 constant TIMSK1    \ Timer/Counter Interrupt Mask Register
-      $20 constant TIMSK1_ICIE1 \ Timer/Counter1 Input Capture Interrupt Enable
-      $04 constant TIMSK1_OCIE1B \ Timer/Counter1 Output CompareB Match Interrupt Enable
-      $02 constant TIMSK1_OCIE1A \ Timer/Counter1 Output CompareA Match Interrupt Enable
-      $01 constant TIMSK1_TOIE1 \ Timer/Counter1 Overflow Interrupt Enable
-    &54 constant TIFR1      \ Timer/Counter Interrupt Flag register
-      $20 constant TIFR1_ICF1 \ Input Capture Flag 1
-      $04 constant TIFR1_OCF1B \ Output Compare Flag 1B
-      $02 constant TIFR1_OCF1A \ Output Compare Flag 1A
-      $01 constant TIFR1_TOV1 \ Timer/Counter1 Overflow Flag
-    &128 constant TCCR1A    \ Timer/Counter1 Control Register A
-      $C0 constant TCCR1A_COM1A \ Compare Output Mode 1A, bits
-      $30 constant TCCR1A_COM1B \ Compare Output Mode 1B, bits
-      $03 constant TCCR1A_WGM1 \ Waveform Generation Mode
-    &129 constant TCCR1B    \ Timer/Counter1 Control Register B
-      $80 constant TCCR1B_ICNC1 \ Input Capture 1 Noise Canceler
-      $40 constant TCCR1B_ICES1 \ Input Capture 1 Edge Select
-      $18 constant TCCR1B_WGM1 \ Waveform Generation Mode
-      $07 constant TCCR1B_CS1 \ Prescaler source of Timer/Counter 1
-    &130 constant TCCR1C    \ Timer/Counter1 Control Register C
-      $80 constant TCCR1C_FOC1A \
-      $40 constant TCCR1C_FOC1B \
-    &132 constant TCNT1     \ Timer/Counter1  Bytes
-    &136 constant OCR1A     \ Timer/Counter1 Output Compare Register  Bytes
-    &138 constant OCR1B     \ Timer/Counter1 Output Compare Register  Bytes
-    &134 constant ICR1      \ Timer/Counter1 Input Capture Register  Bytes
-    &67 constant GTCCR      \ General Timer/Counter Control Register
-      $80 constant GTCCR_TSM \ Timer/Counter Synchronization Mode
-      $01 constant GTCCR_PSRSYNC \ Prescaler Reset Timer/Counter1 and Timer/Counter0
-    \ TIMER_COUNTER_2
-    &112 constant TIMSK2    \ Timer/Counter Interrupt Mask register
-      $04 constant TIMSK2_OCIE2B \ Timer/Counter2 Output Compare Match B Interrupt Enable
-      $02 constant TIMSK2_OCIE2A \ Timer/Counter2 Output Compare Match A Interrupt Enable
-      $01 constant TIMSK2_TOIE2 \ Timer/Counter2 Overflow Interrupt Enable
-    &55 constant TIFR2      \ Timer/Counter Interrupt Flag Register
-      $04 constant TIFR2_OCF2B \ Output Compare Flag 2B
-      $02 constant TIFR2_OCF2A \ Output Compare Flag 2A
-      $01 constant TIFR2_TOV2 \ Timer/Counter2 Overflow Flag
-    &176 constant TCCR2A    \ Timer/Counter2 Control Register A
-      $C0 constant TCCR2A_COM2A \ Compare Output Mode bits
-      $30 constant TCCR2A_COM2B \ Compare Output Mode bits
-      $03 constant TCCR2A_WGM2 \ Waveform Genration Mode
-    &177 constant TCCR2B    \ Timer/Counter2 Control Register B
-      $80 constant TCCR2B_FOC2A \ Force Output Compare A
-      $40 constant TCCR2B_FOC2B \ Force Output Compare B
-      $08 constant TCCR2B_WGM22 \ Waveform Generation Mode
-      $07 constant TCCR2B_CS2 \ Clock Select bits
-    &178 constant TCNT2     \ Timer/Counter2
-    &180 constant OCR2B     \ Timer/Counter2 Output Compare Register B
-    &179 constant OCR2A     \ Timer/Counter2 Output Compare Register A
-    &182 constant ASSR      \ Asynchronous Status Register
-      $40 constant ASSR_EXCLK \ Enable External Clock Input
-      $20 constant ASSR_AS2 \ Asynchronous Timer/Counter2
-      $10 constant ASSR_TCN2UB \ Timer/Counter2 Update Busy
-      $08 constant ASSR_OCR2AUB \ Output Compare Register2 Update Busy
-      $04 constant ASSR_OCR2BUB \ Output Compare Register 2 Update Busy
-      $02 constant ASSR_TCR2AUB \ Timer/Counter Control Register2 Update Busy
-      $01 constant ASSR_TCR2BUB \ Timer/Counter Control Register2 Update Busy
-    \ AD_CONVERTER
-    &124 constant ADMUX     \ The ADC multiplexer Selection Register
-      $C0 constant ADMUX_REFS \ Reference Selection Bits
-      $20 constant ADMUX_ADLAR \ Left Adjust Result
-      $0F constant ADMUX_MUX \ Analog Channel and Gain Selection Bits
-    &120 constant ADC       \ ADC Data Register  Bytes
-    &122 constant ADCSRA    \ The ADC Control and Status register A
-      $80 constant ADCSRA_ADEN \ ADC Enable
-      $40 constant ADCSRA_ADSC \ ADC Start Conversion
-      $20 constant ADCSRA_ADATE \ ADC  Auto Trigger Enable
-      $10 constant ADCSRA_ADIF \ ADC Interrupt Flag
-      $08 constant ADCSRA_ADIE \ ADC Interrupt Enable
-      $07 constant ADCSRA_ADPS \ ADC  Prescaler Select Bits
-    &123 constant ADCSRB    \ The ADC Control and Status register B
-      $40 constant ADCSRB_ACME \
-      $07 constant ADCSRB_ADTS \ ADC Auto Trigger Source bits
-    &126 constant DIDR0     \ Digital Input Disable Register
-      $20 constant DIDR0_ADC5D \
-      $10 constant DIDR0_ADC4D \
-      $08 constant DIDR0_ADC3D \
-      $04 constant DIDR0_ADC2D \
-      $02 constant DIDR0_ADC1D \
-      $01 constant DIDR0_ADC0D \
-    \ ANALOG_COMPARATOR
-    &80 constant ACSR       \ Analog Comparator Control And Status Register
-      $80 constant ACSR_ACD \ Analog Comparator Disable
-      $40 constant ACSR_ACBG \ Analog Comparator Bandgap Select
-      $20 constant ACSR_ACO \ Analog Compare Output
-      $10 constant ACSR_ACI \ Analog Comparator Interrupt Flag
-      $08 constant ACSR_ACIE \ Analog Comparator Interrupt Enable
-      $04 constant ACSR_ACIC \ Analog Comparator Input Capture Enable
-      $03 constant ACSR_ACIS \ Analog Comparator Interrupt Mode Select bits
-    &127 constant DIDR1     \ Digital Input Disable Register 1
-      $02 constant DIDR1_AIN1D \ AIN1 Digital Input Disable
-      $01 constant DIDR1_AIN0D \ AIN0 Digital Input Disable
-    \ PORTB
-    &37 constant PORTB      \ Port B Data Register
-    &36 constant DDRB       \ Port B Data Direction Register
-    &35 constant PINB       \ Port B Input Pins
-    \ PORTC
-    &40 constant PORTC      \ Port C Data Register
-    &39 constant DDRC       \ Port C Data Direction Register
-    &38 constant PINC       \ Port C Input Pins
-    \ PORTD
-    &43 constant PORTD      \ Port D Data Register
-    &42 constant DDRD       \ Port D Data Direction Register
-    &41 constant PIND       \ Port D Input Pins
-    \ TIMER_COUNTER_0
-    &72 constant OCR0B      \ Timer/Counter0 Output Compare Register
-    &71 constant OCR0A      \ Timer/Counter0 Output Compare Register
-    &70 constant TCNT0      \ Timer/Counter0
-    &69 constant TCCR0B     \ Timer/Counter Control Register B
-      $80 constant TCCR0B_FOC0A \ Force Output Compare A
-      $40 constant TCCR0B_FOC0B \ Force Output Compare B
-      $08 constant TCCR0B_WGM02 \
-      $07 constant TCCR0B_CS0 \ Clock Select
-    &68 constant TCCR0A     \ Timer/Counter  Control Register A
-      $C0 constant TCCR0A_COM0A \ Compare Output Mode, Phase Correct PWM Mode
-      $30 constant TCCR0A_COM0B \ Compare Output Mode, Fast PWm
-      $03 constant TCCR0A_WGM0 \ Waveform Generation Mode
-    &110 constant TIMSK0    \ Timer/Counter0 Interrupt Mask Register
-      $04 constant TIMSK0_OCIE0B \ Timer/Counter0 Output Compare Match B Interrupt Enable
-      $02 constant TIMSK0_OCIE0A \ Timer/Counter0 Output Compare Match A Interrupt Enable
-      $01 constant TIMSK0_TOIE0 \ Timer/Counter0 Overflow Interrupt Enable
-    &53 constant TIFR0      \ Timer/Counter0 Interrupt Flag register
-      $04 constant TIFR0_OCF0B \ Timer/Counter0 Output Compare Flag 0B
-      $02 constant TIFR0_OCF0A \ Timer/Counter0 Output Compare Flag 0A
-      $01 constant TIFR0_TOV0 \ Timer/Counter0 Overflow Flag
-    \ EXTERNAL_INTERRUPT
-    &105 constant EICRA     \ External Interrupt Control Register
-      $0C constant EICRA_ISC1 \ External Interrupt Sense Control 1 Bits
-      $03 constant EICRA_ISC0 \ External Interrupt Sense Control 0 Bits
-    &61 constant EIMSK      \ External Interrupt Mask Register
-      $03 constant EIMSK_INT \ External Interrupt Request 1 Enable
-    &60 constant EIFR       \ External Interrupt Flag Register
-      $03 constant EIFR_INTF \ External Interrupt Flags
-    &104 constant PCICR     \ Pin Change Interrupt Control Register
-      $07 constant PCICR_PCIE \ Pin Change Interrupt Enables
-    &109 constant PCMSK2    \ Pin Change Mask Register 2
-      $FF constant PCMSK2_PCINT \ Pin Change Enable Masks
-    &108 constant PCMSK1    \ Pin Change Mask Register 1
-      $7F constant PCMSK1_PCINT \ Pin Change Enable Masks
-    &107 constant PCMSK0    \ Pin Change Mask Register 0
-      $FF constant PCMSK0_PCINT \ Pin Change Enable Masks
-    &59 constant PCIFR      \ Pin Change Interrupt Flag Register
-      $07 constant PCIFR_PCIF \ Pin Change Interrupt Flags
-    \ SPI
-    &78 constant SPDR       \ SPI Data Register
-    &77 constant SPSR       \ SPI Status Register
-      $80 constant SPSR_SPIF \ SPI Interrupt Flag
-      $40 constant SPSR_WCOL \ Write Collision Flag
-      $01 constant SPSR_SPI2X \ Double SPI Speed Bit
-    &76 constant SPCR       \ SPI Control Register
-      $80 constant SPCR_SPIE \ SPI Interrupt Enable
-      $40 constant SPCR_SPE \ SPI Enable
-      $20 constant SPCR_DORD \ Data Order
-      $10 constant SPCR_MSTR \ Master/Slave Select
-      $08 constant SPCR_CPOL \ Clock polarity
-      $04 constant SPCR_CPHA \ Clock Phase
-      $03 constant SPCR_SPR \ SPI Clock Rate Selects
-    \ WATCHDOG
-    &96 constant WDTCSR     \ Watchdog Timer Control Register
-      $80 constant WDTCSR_WDIF \ Watchdog Timeout Interrupt Flag
-      $40 constant WDTCSR_WDIE \ Watchdog Timeout Interrupt Enable
-      $27 constant WDTCSR_WDP \ Watchdog Timer Prescaler Bits
-      $10 constant WDTCSR_WDCE \ Watchdog Change Enable
-      $08 constant WDTCSR_WDE \ Watch Dog Enable
-    \ CPU
-    &100 constant PRR       \ Power Reduction Register
-      $80 constant PRR_PRTWI \ Power Reduction TWI
-      $40 constant PRR_PRTIM2 \ Power Reduction Timer/Counter2
-      $20 constant PRR_PRTIM0 \ Power Reduction Timer/Counter0
-      $08 constant PRR_PRTIM1 \ Power Reduction Timer/Counter1
-      $04 constant PRR_PRSPI \ Power Reduction Serial Peripheral Interface
-      $02 constant PRR_PRUSART0 \ Power Reduction USART
-      $01 constant PRR_PRADC \ Power Reduction ADC
-    &102 constant OSCCAL    \ Oscillator Calibration Value
-    &97 constant CLKPR      \ Clock Prescale Register
-      $80 constant CLKPR_CLKPCE \ Clock Prescaler Change Enable
-      $0F constant CLKPR_CLKPS \ Clock Prescaler Select Bits
-    &95 constant SREG       \ Status Register
-      $80 constant SREG_I \ Global Interrupt Enable
-      $40 constant SREG_T \ Bit Copy Storage
-      $20 constant SREG_H \ Half Carry Flag
-      $10 constant SREG_S \ Sign Bit
-      $08 constant SREG_V \ Two's Complement Overflow Flag
-      $04 constant SREG_N \ Negative Flag
-      $02 constant SREG_Z \ Zero Flag
-      $01 constant SREG_C \ Carry Flag
-    &93 constant SP \ Stack Pointer
-    &87 constant SPMCSR     \ Store Program Memory Control and Status Register
-      $80 constant SPMCSR_SPMIE \ SPM Interrupt Enable
-      $40 constant SPMCSR_RWWSB \ Read-While-Write Section Busy
-      $10 constant SPMCSR_RWWSRE \ Read-While-Write section read enable
-      $08 constant SPMCSR_BLBSET \ Boot Lock Bit Set
-      $04 constant SPMCSR_PGWRT \ Page Write
-      $02 constant SPMCSR_PGERS \ Page Erase
-      $01 constant SPMCSR_SELFPRGEN \ Self Programming Enable
-    &85 constant MCUCR      \ MCU Control Register
-      $40 constant MCUCR_BODS \ BOD Sleep
-      $20 constant MCUCR_BODSE \ BOD Sleep Enable
-      $10 constant MCUCR_PUD \
-      $02 constant MCUCR_IVSEL \
-      $01 constant MCUCR_IVCE \
-    &84 constant MCUSR      \ MCU Status Register
-      $08 constant MCUSR_WDRF \ Watchdog Reset Flag
-      $04 constant MCUSR_BORF \ Brown-out Reset Flag
-      $02 constant MCUSR_EXTRF \ External Reset Flag
-      $01 constant MCUSR_PORF \ Power-on reset flag
-    &83 constant SMCR       \ Sleep Mode Control Register
-      $0E constant SMCR_SM \ Sleep Mode Select Bits
-      $01 constant SMCR_SE \ Sleep Enable
-    &75 constant GPIOR2     \ General Purpose I/O Register 2
-    &74 constant GPIOR1     \ General Purpose I/O Register 1
-    &62 constant GPIOR0     \ General Purpose I/O Register 0
-    \ EEPROM
-    &65 constant EEAR       \ EEPROM Address Register  Bytes
-    &64 constant EEDR       \ EEPROM Data Register
-    &63 constant EECR       \ EEPROM Control Register
-      $30 constant EECR_EEPM \ EEPROM Programming Mode Bits
-      $08 constant EECR_EERIE \ EEPROM Ready Interrupt Enable
-      $04 constant EECR_EEMPE \ EEPROM Master Write Enable
-      $02 constant EECR_EEPE \ EEPROM Write Enable
-      $01 constant EECR_EERE \ EEPROM Read Enable
+***** TWI
+      #+begin_src forth :tangle ada-shield.frt
+      \ TWI
+      &189 constant TWAMR     \ TWI (Slave) Address Mask Register
+        $FE constant TWAMR_TWAM \
+      &184 constant TWBR      \ TWI Bit Rate register
+      &188 constant TWCR      \ TWI Control Register
+        $80 constant TWCR_TWINT \ TWI Interrupt Flag
+        $40 constant TWCR_TWEA \ TWI Enable Acknowledge Bit
+        $20 constant TWCR_TWSTA \ TWI Start Condition Bit
+        $10 constant TWCR_TWSTO \ TWI Stop Condition Bit
+        $08 constant TWCR_TWWC \ TWI Write Collition Flag
+        $04 constant TWCR_TWEN \ TWI Enable Bit
+        $01 constant TWCR_TWIE \ TWI Interrupt Enable
+      &185 constant TWSR      \ TWI Status Register
+        $F8 constant TWSR_TWS \ TWI Status
+        $03 constant TWSR_TWPS \ TWI Prescaler
+      &187 constant TWDR      \ TWI Data register
+      &186 constant TWAR      \ TWI (Slave) Address register
+        $FE constant TWAR_TWA \ TWI (Slave) Address register Bits
+        $01 constant TWAR_TWGCE \ TWI General Call Recognition Enable Bit
+      #+end_src
 
-    \ Interrupts
-    &2  constant INT0Addr \ External Interrupt Request 0
-    &4  constant INT1Addr \ External Interrupt Request 1
-    &6  constant PCINT0Addr \ Pin Change Interrupt Request 0
-    &8  constant PCINT1Addr \ Pin Change Interrupt Request 0
-    &10  constant PCINT2Addr \ Pin Change Interrupt Request 1
-    &12  constant WDTAddr \ Watchdog Time-out Interrupt
-    &14  constant TIMER2_COMPAAddr \ Timer/Counter2 Compare Match A
-    &16  constant TIMER2_COMPBAddr \ Timer/Counter2 Compare Match A
-    &18  constant TIMER2_OVFAddr \ Timer/Counter2 Overflow
-    &20  constant TIMER1_CAPTAddr \ Timer/Counter1 Capture Event
-    &22  constant TIMER1_COMPAAddr \ Timer/Counter1 Compare Match A
-    &24  constant TIMER1_COMPBAddr \ Timer/Counter1 Compare Match B
-    &26  constant TIMER1_OVFAddr \ Timer/Counter1 Overflow
-    &28  constant TIMER0_COMPAAddr \ TimerCounter0 Compare Match A
-    &30  constant TIMER0_COMPBAddr \ TimerCounter0 Compare Match B
-    &32  constant TIMER0_OVFAddr \ Timer/Couner0 Overflow
-    &34  constant SPI__STCAddr \ SPI Serial Transfer Complete
-    &36  constant USART__RXAddr \ USART Rx Complete
-    &38  constant USART__UDREAddr \ USART, Data Register Empty
-    &40  constant USART__TXAddr \ USART Tx Complete
-    &42  constant ADCAddr \ ADC Conversion Complete
-    &44  constant EE_READYAddr \ EEPROM Ready
-    &46  constant ANALOG_COMPAddr \ Analog Comparator
-    &48  constant TWIAddr \ Two-wire Serial Interface
-    &50  constant SPM_ReadyAddr \ Store Program Memory Read
-    #+end_src
+***** TIMER_COUNTER_1
+      #+begin_src forth :tangle ada-shield.frt
+      \ TIMER_COUNTER_1
+      &111 constant TIMSK1    \ Timer/Counter Interrupt Mask Register
+        $20 constant TIMSK1_ICIE1 \ Timer/Counter1 Input Capture Interrupt Enable
+        $04 constant TIMSK1_OCIE1B \ Timer/Counter1 Output CompareB Match Interrupt Enable
+        $02 constant TIMSK1_OCIE1A \ Timer/Counter1 Output CompareA Match Interrupt Enable
+        $01 constant TIMSK1_TOIE1 \ Timer/Counter1 Overflow Interrupt Enable
+      &54 constant TIFR1      \ Timer/Counter Interrupt Flag register
+        $20 constant TIFR1_ICF1 \ Input Capture Flag 1
+        $04 constant TIFR1_OCF1B \ Output Compare Flag 1B
+        $02 constant TIFR1_OCF1A \ Output Compare Flag 1A
+        $01 constant TIFR1_TOV1 \ Timer/Counter1 Overflow Flag
+      &128 constant TCCR1A    \ Timer/Counter1 Control Register A
+        $C0 constant TCCR1A_COM1A \ Compare Output Mode 1A, bits
+        $30 constant TCCR1A_COM1B \ Compare Output Mode 1B, bits
+        $03 constant TCCR1A_WGM1 \ Waveform Generation Mode
+      &129 constant TCCR1B    \ Timer/Counter1 Control Register B
+        $80 constant TCCR1B_ICNC1 \ Input Capture 1 Noise Canceler
+        $40 constant TCCR1B_ICES1 \ Input Capture 1 Edge Select
+        $18 constant TCCR1B_WGM1 \ Waveform Generation Mode
+        $07 constant TCCR1B_CS1 \ Prescaler source of Timer/Counter 1
+      &130 constant TCCR1C    \ Timer/Counter1 Control Register C
+        $80 constant TCCR1C_FOC1A \
+        $40 constant TCCR1C_FOC1B \
+      &132 constant TCNT1     \ Timer/Counter1  Bytes
+      &136 constant OCR1A     \ Timer/Counter1 Output Compare Register  Bytes
+      &138 constant OCR1B     \ Timer/Counter1 Output Compare Register  Bytes
+      &134 constant ICR1      \ Timer/Counter1 Input Capture Register  Bytes
+      &67 constant GTCCR      \ General Timer/Counter Control Register
+        $80 constant GTCCR_TSM \ Timer/Counter Synchronization Mode
+        $01 constant GTCCR_PSRSYNC \ Prescaler Reset Timer/Counter1 and Timer/Counter0
+      #+end_src
+
+***** TIMER_COUNTER_2                 :no:
+      #+begin_src forth :tangle no
+      \ TIMER_COUNTER_2
+      &112 constant TIMSK2    \ Timer/Counter Interrupt Mask register
+        $04 constant TIMSK2_OCIE2B \ Timer/Counter2 Output Compare Match B Interrupt Enable
+        $02 constant TIMSK2_OCIE2A \ Timer/Counter2 Output Compare Match A Interrupt Enable
+        $01 constant TIMSK2_TOIE2 \ Timer/Counter2 Overflow Interrupt Enable
+      &55 constant TIFR2      \ Timer/Counter Interrupt Flag Register
+        $04 constant TIFR2_OCF2B \ Output Compare Flag 2B
+        $02 constant TIFR2_OCF2A \ Output Compare Flag 2A
+        $01 constant TIFR2_TOV2 \ Timer/Counter2 Overflow Flag
+      &176 constant TCCR2A    \ Timer/Counter2 Control Register A
+        $C0 constant TCCR2A_COM2A \ Compare Output Mode bits
+        $30 constant TCCR2A_COM2B \ Compare Output Mode bits
+        $03 constant TCCR2A_WGM2 \ Waveform Genration Mode
+      &177 constant TCCR2B    \ Timer/Counter2 Control Register B
+        $80 constant TCCR2B_FOC2A \ Force Output Compare A
+        $40 constant TCCR2B_FOC2B \ Force Output Compare B
+        $08 constant TCCR2B_WGM22 \ Waveform Generation Mode
+        $07 constant TCCR2B_CS2 \ Clock Select bits
+      &178 constant TCNT2     \ Timer/Counter2
+      &180 constant OCR2B     \ Timer/Counter2 Output Compare Register B
+      &179 constant OCR2A     \ Timer/Counter2 Output Compare Register A
+      &182 constant ASSR      \ Asynchronous Status Register
+        $40 constant ASSR_EXCLK \ Enable External Clock Input
+        $20 constant ASSR_AS2 \ Asynchronous Timer/Counter2
+        $10 constant ASSR_TCN2UB \ Timer/Counter2 Update Busy
+        $08 constant ASSR_OCR2AUB \ Output Compare Register2 Update Busy
+        $04 constant ASSR_OCR2BUB \ Output Compare Register 2 Update Busy
+        $02 constant ASSR_TCR2AUB \ Timer/Counter Control Register2 Update Busy
+        $01 constant ASSR_TCR2BUB \ Timer/Counter Control Register2 Update Busy
+      #+end_src
+
+***** AD_CONVERTER                    :no:
+      #+begin_src forth :tangle no
+      \ AD_CONVERTER
+      &124 constant ADMUX     \ The ADC multiplexer Selection Register
+        $C0 constant ADMUX_REFS \ Reference Selection Bits
+        $20 constant ADMUX_ADLAR \ Left Adjust Result
+        $0F constant ADMUX_MUX \ Analog Channel and Gain Selection Bits
+      &120 constant ADC       \ ADC Data Register  Bytes
+      &122 constant ADCSRA    \ The ADC Control and Status register A
+        $80 constant ADCSRA_ADEN \ ADC Enable
+        $40 constant ADCSRA_ADSC \ ADC Start Conversion
+        $20 constant ADCSRA_ADATE \ ADC  Auto Trigger Enable
+        $10 constant ADCSRA_ADIF \ ADC Interrupt Flag
+        $08 constant ADCSRA_ADIE \ ADC Interrupt Enable
+        $07 constant ADCSRA_ADPS \ ADC  Prescaler Select Bits
+      &123 constant ADCSRB    \ The ADC Control and Status register B
+        $40 constant ADCSRB_ACME \
+        $07 constant ADCSRB_ADTS \ ADC Auto Trigger Source bits
+      &126 constant DIDR0     \ Digital Input Disable Register
+        $20 constant DIDR0_ADC5D \
+        $10 constant DIDR0_ADC4D \
+        $08 constant DIDR0_ADC3D \
+        $04 constant DIDR0_ADC2D \
+        $02 constant DIDR0_ADC1D \
+        $01 constant DIDR0_ADC0D \
+      #+end_src
+
+***** ANALOG_COMPARATOR               :no:
+      #+begin_src forth :tangle no
+      \ ANALOG_COMPARATOR
+      &80 constant ACSR       \ Analog Comparator Control And Status Register
+        $80 constant ACSR_ACD \ Analog Comparator Disable
+        $40 constant ACSR_ACBG \ Analog Comparator Bandgap Select
+        $20 constant ACSR_ACO \ Analog Compare Output
+        $10 constant ACSR_ACI \ Analog Comparator Interrupt Flag
+        $08 constant ACSR_ACIE \ Analog Comparator Interrupt Enable
+        $04 constant ACSR_ACIC \ Analog Comparator Input Capture Enable
+        $03 constant ACSR_ACIS \ Analog Comparator Interrupt Mode Select bits
+      &127 constant DIDR1     \ Digital Input Disable Register 1
+        $02 constant DIDR1_AIN1D \ AIN1 Digital Input Disable
+        $01 constant DIDR1_AIN0D \ AIN0 Digital Input Disable
+      #+end_src
+
+***** PORTB
+      #+begin_src forth :tangle ada-shield.frt
+      \ PORTB
+      &37 constant PORTB      \ Port B Data Register
+      &36 constant DDRB       \ Port B Data Direction Register
+      &35 constant PINB       \ Port B Input Pins
+      #+end_src
+
+***** PORTC                           :no:
+      #+begin_src forth :tangle no
+      \ PORTC
+      &40 constant PORTC      \ Port C Data Register
+      &39 constant DDRC       \ Port C Data Direction Register
+      &38 constant PINC       \ Port C Input Pins
+      #+end_src
+
+***** PORTD                           :no:
+      #+begin_src forth :tangle no
+      \ PORTD
+      &43 constant PORTD      \ Port D Data Register
+      &42 constant DDRD       \ Port D Data Direction Register
+      &41 constant PIND       \ Port D Input Pins
+      #+end_src
+
+***** TIMER_COUNTER_0
+      #+begin_src forth :tangle ada-shield.frt
+      \ TIMER_COUNTER_0
+      &72 constant OCR0B      \ Timer/Counter0 Output Compare Register
+      &71 constant OCR0A      \ Timer/Counter0 Output Compare Register
+      &70 constant TCNT0      \ Timer/Counter0
+      &69 constant TCCR0B     \ Timer/Counter Control Register B
+        $80 constant TCCR0B_FOC0A \ Force Output Compare A
+        $40 constant TCCR0B_FOC0B \ Force Output Compare B
+        $08 constant TCCR0B_WGM02 \
+        $07 constant TCCR0B_CS0 \ Clock Select
+      &68 constant TCCR0A     \ Timer/Counter  Control Register A
+        $C0 constant TCCR0A_COM0A \ Compare Output Mode, Phase Correct PWM Mode
+        $30 constant TCCR0A_COM0B \ Compare Output Mode, Fast PWm
+        $03 constant TCCR0A_WGM0 \ Waveform Generation Mode
+      &110 constant TIMSK0    \ Timer/Counter0 Interrupt Mask Register
+        $04 constant TIMSK0_OCIE0B \ Timer/Counter0 Output Compare Match B Interrupt Enable
+        $02 constant TIMSK0_OCIE0A \ Timer/Counter0 Output Compare Match A Interrupt Enable
+        $01 constant TIMSK0_TOIE0 \ Timer/Counter0 Overflow Interrupt Enable
+      &53 constant TIFR0      \ Timer/Counter0 Interrupt Flag register
+        $04 constant TIFR0_OCF0B \ Timer/Counter0 Output Compare Flag 0B
+        $02 constant TIFR0_OCF0A \ Timer/Counter0 Output Compare Flag 0A
+        $01 constant TIFR0_TOV0 \ Timer/Counter0 Overflow Flag
+      #+end_src
+
+***** EXTERNAL_INTERRUPT              :no:
+      #+begin_src forth :tangle no
+      \ EXTERNAL_INTERRUPT
+      &105 constant EICRA     \ External Interrupt Control Register
+        $0C constant EICRA_ISC1 \ External Interrupt Sense Control 1 Bits
+        $03 constant EICRA_ISC0 \ External Interrupt Sense Control 0 Bits
+      &61 constant EIMSK      \ External Interrupt Mask Register
+        $03 constant EIMSK_INT \ External Interrupt Request 1 Enable
+      &60 constant EIFR       \ External Interrupt Flag Register
+        $03 constant EIFR_INTF \ External Interrupt Flags
+      &104 constant PCICR     \ Pin Change Interrupt Control Register
+        $07 constant PCICR_PCIE \ Pin Change Interrupt Enables
+      &109 constant PCMSK2    \ Pin Change Mask Register 2
+        $FF constant PCMSK2_PCINT \ Pin Change Enable Masks
+      &108 constant PCMSK1    \ Pin Change Mask Register 1
+        $7F constant PCMSK1_PCINT \ Pin Change Enable Masks
+      &107 constant PCMSK0    \ Pin Change Mask Register 0
+        $FF constant PCMSK0_PCINT \ Pin Change Enable Masks
+      &59 constant PCIFR      \ Pin Change Interrupt Flag Register
+        $07 constant PCIFR_PCIF \ Pin Change Interrupt Flags
+      #+end_src
+
+***** SPI                             :no:
+      #+begin_src forth :tangle no
+      \ SPI
+      &78 constant SPDR       \ SPI Data Register
+      &77 constant SPSR       \ SPI Status Register
+        $80 constant SPSR_SPIF \ SPI Interrupt Flag
+        $40 constant SPSR_WCOL \ Write Collision Flag
+        $01 constant SPSR_SPI2X \ Double SPI Speed Bit
+      &76 constant SPCR       \ SPI Control Register
+        $80 constant SPCR_SPIE \ SPI Interrupt Enable
+        $40 constant SPCR_SPE \ SPI Enable
+        $20 constant SPCR_DORD \ Data Order
+        $10 constant SPCR_MSTR \ Master/Slave Select
+        $08 constant SPCR_CPOL \ Clock polarity
+        $04 constant SPCR_CPHA \ Clock Phase
+        $03 constant SPCR_SPR \ SPI Clock Rate Selects
+      #+end_src
+
+***** WATCHDOG                        :no:
+      #+begin_src forth :tangle no
+      \ WATCHDOG
+      &96 constant WDTCSR     \ Watchdog Timer Control Register
+        $80 constant WDTCSR_WDIF \ Watchdog Timeout Interrupt Flag
+        $40 constant WDTCSR_WDIE \ Watchdog Timeout Interrupt Enable
+        $27 constant WDTCSR_WDP \ Watchdog Timer Prescaler Bits
+        $10 constant WDTCSR_WDCE \ Watchdog Change Enable
+        $08 constant WDTCSR_WDE \ Watch Dog Enable
+      #+end_src
+
+***** CPU                             :no:
+      #+begin_src forth :tangle no
+      \ CPU
+      &100 constant PRR       \ Power Reduction Register
+        $80 constant PRR_PRTWI \ Power Reduction TWI
+        $40 constant PRR_PRTIM2 \ Power Reduction Timer/Counter2
+        $20 constant PRR_PRTIM0 \ Power Reduction Timer/Counter0
+        $08 constant PRR_PRTIM1 \ Power Reduction Timer/Counter1
+        $04 constant PRR_PRSPI \ Power Reduction Serial Peripheral Interface
+        $02 constant PRR_PRUSART0 \ Power Reduction USART
+        $01 constant PRR_PRADC \ Power Reduction ADC
+      &102 constant OSCCAL    \ Oscillator Calibration Value
+      &97 constant CLKPR      \ Clock Prescale Register
+        $80 constant CLKPR_CLKPCE \ Clock Prescaler Change Enable
+        $0F constant CLKPR_CLKPS \ Clock Prescaler Select Bits
+      &95 constant SREG       \ Status Register
+        $80 constant SREG_I \ Global Interrupt Enable
+        $40 constant SREG_T \ Bit Copy Storage
+        $20 constant SREG_H \ Half Carry Flag
+        $10 constant SREG_S \ Sign Bit
+        $08 constant SREG_V \ Two's Complement Overflow Flag
+        $04 constant SREG_N \ Negative Flag
+        $02 constant SREG_Z \ Zero Flag
+        $01 constant SREG_C \ Carry Flag
+      &93 constant SP \ Stack Pointer
+      &87 constant SPMCSR     \ Store Program Memory Control and Status Register
+        $80 constant SPMCSR_SPMIE \ SPM Interrupt Enable
+        $40 constant SPMCSR_RWWSB \ Read-While-Write Section Busy
+        $10 constant SPMCSR_RWWSRE \ Read-While-Write section read enable
+        $08 constant SPMCSR_BLBSET \ Boot Lock Bit Set
+        $04 constant SPMCSR_PGWRT \ Page Write
+        $02 constant SPMCSR_PGERS \ Page Erase
+        $01 constant SPMCSR_SELFPRGEN \ Self Programming Enable
+      &85 constant MCUCR      \ MCU Control Register
+        $40 constant MCUCR_BODS \ BOD Sleep
+        $20 constant MCUCR_BODSE \ BOD Sleep Enable
+        $10 constant MCUCR_PUD \
+        $02 constant MCUCR_IVSEL \
+        $01 constant MCUCR_IVCE \
+      &84 constant MCUSR      \ MCU Status Register
+        $08 constant MCUSR_WDRF \ Watchdog Reset Flag
+        $04 constant MCUSR_BORF \ Brown-out Reset Flag
+        $02 constant MCUSR_EXTRF \ External Reset Flag
+        $01 constant MCUSR_PORF \ Power-on reset flag
+      &83 constant SMCR       \ Sleep Mode Control Register
+        $0E constant SMCR_SM \ Sleep Mode Select Bits
+        $01 constant SMCR_SE \ Sleep Enable
+      &75 constant GPIOR2     \ General Purpose I/O Register 2
+      &74 constant GPIOR1     \ General Purpose I/O Register 1
+      &62 constant GPIOR0     \ General Purpose I/O Register 0
+      #+end_src
+
+***** EEPROM                          :no:
+      #+begin_src forth :tangle no
+      \ EEPROM
+      &65 constant EEAR       \ EEPROM Address Register  Bytes
+      &64 constant EEDR       \ EEPROM Data Register
+      &63 constant EECR       \ EEPROM Control Register
+        $30 constant EECR_EEPM \ EEPROM Programming Mode Bits
+        $08 constant EECR_EERIE \ EEPROM Ready Interrupt Enable
+        $04 constant EECR_EEMPE \ EEPROM Master Write Enable
+        $02 constant EECR_EEPE \ EEPROM Write Enable
+        $01 constant EECR_EERE \ EEPROM Read Enable
+      #+end_src
+
+***** Interrupts
+      #+begin_src forth :tangle ada-shield.frt
+      \ Interrupts
+      &2  constant INT0Addr \ External Interrupt Request 0
+      &4  constant INT1Addr \ External Interrupt Request 1
+      &6  constant PCINT0Addr \ Pin Change Interrupt Request 0
+      &8  constant PCINT1Addr \ Pin Change Interrupt Request 0
+      &10  constant PCINT2Addr \ Pin Change Interrupt Request 1
+      &12  constant WDTAddr \ Watchdog Time-out Interrupt
+      &14  constant TIMER2_COMPAAddr \ Timer/Counter2 Compare Match A
+      &16  constant TIMER2_COMPBAddr \ Timer/Counter2 Compare Match A
+      &18  constant TIMER2_OVFAddr \ Timer/Counter2 Overflow
+      &20  constant TIMER1_CAPTAddr \ Timer/Counter1 Capture Event
+      &22  constant TIMER1_COMPAAddr \ Timer/Counter1 Compare Match A
+      &24  constant TIMER1_COMPBAddr \ Timer/Counter1 Compare Match B
+      &26  constant TIMER1_OVFAddr \ Timer/Counter1 Overflow
+      &28  constant TIMER0_COMPAAddr \ TimerCounter0 Compare Match A
+      &30  constant TIMER0_COMPBAddr \ TimerCounter0 Compare Match B
+      &32  constant TIMER0_OVFAddr \ Timer/Couner0 Overflow
+      &34  constant SPI__STCAddr \ SPI Serial Transfer Complete
+      &36  constant USART__RXAddr \ USART Rx Complete
+      &38  constant USART__UDREAddr \ USART, Data Register Empty
+      &40  constant USART__TXAddr \ USART Tx Complete
+      &42  constant ADCAddr \ ADC Conversion Complete
+      &44  constant EE_READYAddr \ EEPROM Ready
+      &46  constant ANALOG_COMPAddr \ Analog Comparator
+      &48  constant TWIAddr \ Two-wire Serial Interface
+      &50  constant SPM_ReadyAddr \ Store Program Memory Read
+      #+end_src
 
 *** lib/bitnames.frt
+    - A named port pin puts a bitmask on stack, wherin the set bit indicates which
+      bit of the port register corresponds to the pin.
+      And then puts the address of its port on stack too.
+    - Use it this way:
+      PORTD 7 portpin: PD.7  ( define portD pin #7)
+      PD.7 high              ( turn portD pin #7 on, i.e. set it high-level)
+      PD.7 low               ( turn portD pin #7 off, i.e. set it low-level)
+      PD.7 <ms> pulse        ( turn portD pin #7 for <ms> high and low)
+      the following words are for "real" IO pins only
+      PD.7 pin_output        ( set DDRD so that portD pin #7 is output)
+      PD.7 pin_input         ( set DDRD so that portD pin #7 is input)
+      PD.7 pin_high?         ( true if pinD pin #7 is high)
+      PD.7 pin_low?          ( true if pinD pin #7 is low)
+    - multi bit operation
+      PORTD F bitmask: PD.F  ( define the lower nibble of port d )
+      PD.F pin@              ( get the lower nibble bits )
+      5 PD.F pin!            ( put the lower nibble bits, do not change the others )
     #+begin_src forth :tangle ada-shield.frt
-    \ Code: Matthias Trute
-    \ Text: M.Kalus
-
-    \ A named port pin puts a bitmask on stack, wherin the set bit indicates which
-    \ bit of the port register corresponds to the pin.
-    \ And then puts the address of its port on stack too.
-
-    \ Use it this way:
-    \ PORTD 7 portpin: PD.7  ( define portD pin #7)
-    \ PD.7 high              ( turn portD pin #7 on, i.e. set it high-level)
-    \ PD.7 low               ( turn portD pin #7 off, i.e. set it low-level)
-    \ PD.7 <ms> pulse        ( turn portD pin #7 for <ms> high and low)
-    \ the following words are for "real" IO pins only
-    \ PD.7 pin_output        ( set DDRD so that portD pin #7 is output)
-    \ PD.7 pin_input         ( set DDRD so that portD pin #7 is input)
-    \ PD.7 pin_high?         ( true if pinD pin #7 is high)
-    \ PD.7 pin_low?          ( true if pinD pin #7 is low)
-    \
-    \ multi bit operation
-    \ PORTD F bitmask: PD.F  ( define the lower nibble of port d )
-    \ PD.F pin@              ( get the lower nibble bits )
-    \ 5 PD.F pin!            ( put the lower nibble bits, do not change the others )
-
     : bitmask: ( C: "ccc" portadr bmask -- ) ( R: -- pinmask portadr )
       <builds
          , ,
@@ -679,8 +683,6 @@
         3 rshift +             \ byte address
         r> bitmask:            \ portaddr may have changed
     ;
-
-
 
     \ Turn a port pin on, dont change the others.
     : high ( pinmask portadr -- )
@@ -701,7 +703,6 @@
         swap ( -- new-value port)
         c!
     ;
-
 
     \ synonym off low
     \ synonym on  high
@@ -750,7 +751,6 @@
         c!
     ;
 
-
     \ Only for PORTx bits,
     \ because address of DDRx is one less than address of PORTx.
 
@@ -792,45 +792,37 @@
       2dup pin_input low
     ;
 
-
     \ enable the pull up resistor
     : pin_pullup_on ( pinmask portaddr -- )
       2dup pin_input high
     ;
     #+end_src
 *** lib/hardware/i2c-twi.frt
+    - basic I2C operations, uses 7bit bus addresses
+      uses the TWI module of the Atmega's.
+    - provides public commands
+      i2c.ping?         -- checks if addr is active
+      i2c.init          -- flexible configuration setup. see below
+      i2c.init.default  -- generic slow speed setup
+      i2c.off           -- turns off I2C
+    - and more internal commands
+      i2c.wait          -- wait for the current i2c transaction
+      i2c.start         -- send start condition
+      i2c.stop          -- send stop condition
+      i2c.tx            -- send one byte, wait for ACK
+      i2c.rx            -- receive one byte with ACK
+      i2c.rxn           -- receive one byte with NACK
+      i2c.status        -- get the last i2c status
+    - i2c (SCL) clock speed = CPU_clock/(16 + 2*bitrateregister*(4^prescaler))
+      following the SCL clock speed in Hz for an 8Mhz device
+    - bitrate register (may be any value between 0 and 255)
+               4      8       16      32      64      128    255
+      prescaler
+      /1    333.333 250.000 166.667 100.000  55.556  29.412  15.209
+      /4    166.667 100.000  55.556  29.412  15.152   7.692   3.891
+      /16    55.556  29.412  15.152   7.692   3.876   1.946     978
+      /64    15.152   7.692   3.876   1.946     975     488     245
     #+begin_src forth :tangle ada-shield.frt
-    \ basic I2C operations, uses 7bit bus addresses
-    \ uses the TWI module of the Atmega's.
-
-    \ provides public commands
-    \  i2c.ping?         -- checks if addr is active
-    \  i2c.init          -- flexible configuration setup. see below
-    \  i2c.init.default  -- generic slow speed setup
-    \  i2c.off           -- turns off I2C
-
-    \ and more internal commands
-    \  i2c.wait          -- wait for the current i2c transaction
-    \  i2c.start         -- send start condition
-    \  i2c.stop          -- send stop condition
-    \  i2c.tx            -- send one byte, wait for ACK
-    \  i2c.rx            -- receive one byte with ACK
-    \  i2c.rxn           .. receive one byte with NACK
-    \  i2c.status        -- get the last i2c status
-
-    \
-    \ i2c (SCL) clock speed = CPU_clock/(16 + 2*bitrateregister*(4^prescaler))
-    \ following the SCL clock speed in Hz for an 8Mhz device
-    \      bitrate register (may be any value between 0 and 255)
-    \               4      8       16      32      64      128    255
-    \      prescaler
-    \      /1    333.333 250.000 166.667 100.000  55.556  29.412  15.209
-    \      /4    166.667 100.000  55.556  29.412  15.152   7.692   3.891
-    \      /16    55.556  29.412  15.152   7.692   3.876   1.946     978
-    \      /64    15.152   7.692   3.876   1.946     975     488     245
-    \
-    \
-
     -4000 constant i2c.timeout  \ exception number for timeout
     10000 Evalue   i2c.maxticks \ # of checks until timeout is reached
     variable i2c.loop           \ timeout counter
@@ -890,8 +882,6 @@
         \ no wait for completion.
     ;
 
-
-
     \ process the data
     : i2c.action
         %10000100 or TWCR c! \ _BV(i2cNT)|_BV(TWEN)
@@ -932,22 +922,18 @@
     ;
     #+end_src
 
-*** lib/hardware/i2c.frt
-    #+begin_src forth :tangle ada-shield.frt
-    \ basic I2C operations, uses 7bit bus addresses
-    \ uses the TWI module of the Atmega's.
-
-    \ provides public commands
-
-    \  i2c.begin         -- starts a I2C bus cycle
-    \  i2c.end           -- ends a I2C bus cycle
-    \  i2c.n>            -- send n bytes to device   (n> means from data stack)
-    \  i2c.>n            -- read n bytes from device (>n means to data stack)
-
+*** lib/hardware/i2c.frt              :no:
+    - basic I2C operations, uses 7bit bus addresses
+      uses the TWI module of the Atmega's.
+    - provides public commands
+      i2c.begin         -- starts a I2C bus cycle
+      i2c.end           -- ends a I2C bus cycle
+      i2c.n>            -- send n bytes to device   (n> means from data stack)
+      i2c.>n            -- read n bytes from device (>n means to data stack)
+    #+begin_src forth :tangle no
     \ convert the bus address into a sendable byte
     \ the address bits are the upper 7 ones,
     \ the LSB is the read/write bit.
-
     : i2c.wr 2* ;
     : i2c.rd 2* 1+ ;
 
@@ -991,23 +977,21 @@
     #+end_src
 
 *** avr8/lib/forth2012/core/eeprom-buffer.frt
+    - internal EEPROM routines. They do not operate on external
+      storage
+    - Ebuffer: is the EEPROM pendant to buffer: from forth200x
+      it takes the number of bytes to allocate in RAM and parses
+      SOURCE for the name to give to the buffer
+    - Eallot is the EEPROM pendant for allot from the core word set
+      it allocates n bytes of EEPROM storage and return the starting
+      address.
+    - for usage see http://amforth.sourceforge.net/TG/recipes/EEPROM.html
     #+begin_src forth :tangle ada-shield.frt
-    \ internal EEPROM routines. They do not operate on external
-    \ storage
-
-    \ Ebuffer: is the EEPROM pendant to buffer: from forth200x
-    \ it takes the number of bytes to allocate in RAM and parses
-    \ SOURCE for the name to give to the buffer
-
-    \ Eallot is the EEPROM pendant for allot from the core word set
-    \ it allocates n bytes of EEPROM storage and return the starting
-    \ address.
-
     : Eallot  ehere + to ehere ;
     : Ebuffer: ehere constant Eallot ;
-
-    \ for usage see http://amforth.sourceforge.net/TG/recipes/EEPROM.html
     #+end_src
+
+
 
 * names for two motorshields
   - you may use more than two shields
@@ -1020,19 +1004,20 @@
   Variable shield
   #+end_src
 
-* register name
-  #+begin_src forth :tangle ada-shield.frt
-  00 Evalue MODE1
-  01 Evalue MODE2
-  \  02 Evalue Subaddr1
-  \  03 Evalue Subaddr2
-  \  04 Evalue Subaddr3
-  \  05 Evalue ALLCALLADDR
-  \  $0E Evalue LEDAll-Address
-  \  $FD Evalue pre_scaler
-  #+end_src
+* commands to the PCA9685 chip -- through i2c
 
-* commands to the PCA9685 chip
+*** register name
+    - 00 Evalue MODE1
+      01 Evalue MODE2
+      02 Evalue Subaddr1
+      03 Evalue Subaddr2
+      04 Evalue Subaddr3
+      05 Evalue ALLCALLADDR
+      $0E Evalue LEDAll-Address
+      $FD Evalue pre_scaler
+    #+begin_src forth :tangle ada-shield.frt
+    00 Evalue MODE1
+    #+end_src
 
 *** set_autoincr
     - set the PCA9685 in auto-increment mode
@@ -1076,43 +1061,37 @@
     #+begin_src forth :tangle ada-shield.frt
     : reset ( -- )
         i2c.start
-        0 i2c.tx        \ general address
+        0    i2c.tx     \ general address
         %110 i2c.tx     \ reset
         i2c.stop
     ;
     #+end_src
 
-* write into registers corresponding to LEDs
-
-* led
+* led & pwm
+  - write into registers corresponding to leds
+    which controls the pwm
   #+begin_src forth :tangle ada-shield.frt
   : led ( n -- )          \ calculate reg.addr of LED Nr. n
       4 *  6 +
   ;
 
   \ write one 16 bit data to two subsequent regs starting at address addr
-   : led!  ( n addr -- )
-     set_autoincr
-     shield @ i2c.tx
-     led i2c.tx                           \ reg.addr
-  \   $100 u/mod swap i2c.tx i2c.tx        \ as this is always NUll we won't need it
-     0 0 i2c.tx i2c.tx
-     $100 u/mod swap i2c.tx i2c.tx
-     i2c.stop ;
+  : led!  ( n addr -- )
+      set_autoincr
+      shield @ i2c.tx
+      led i2c.tx                           \ reg.addr
+      \ $100 u/mod swap i2c.tx i2c.tx        \ as this is always NUll we won't need it
+      0 0 i2c.tx i2c.tx
+      $100 u/mod swap i2c.tx i2c.tx
+      i2c.stop
+  ;
 
-  \  dealing with motor registers
+  \ dealing with motor registers
 
   \ M0 --> pwm = 8;  in2 = 9;  in1 = 10;
   \ M1 --> pwm = 13; in2 = 12; in1 = 11;
   \ M2 --> pwm = 2;  in2 = 3;  in1 = 4;
   \ M3 --> pwm = 7;  in2 = 6;  in1 = 5;
-
-  \ Ebuffer from Amforth documentation by M. Trute and others
-
-  \ At this time there is a little bug in Ebuffer: Maybe it will be replaced in
-  \ future. If so you have to care about the definition of the Motortab.
-  \ : Ealloc edp swap over + to edp ;
-  \ : Ebuffer: edp value Ealloc ; ( n -- ) ( similar to buffer: from forth200x)
 
   : e, ( addr n -- adr+cell )
     over !e 1 cells + ;
@@ -1121,7 +1100,12 @@
   24 Ebuffer: Motors
 
   \ workaround: 2 + ... drop
-  Motors 2 + 8 e, 9 e, &10 e, &13 e, &12 e, &11 e, 2 e, 3 e, 4 e, 7 e, 6 e, 5 e, drop
+  Motors 2 +
+         8 e,   9 e, &10 e,
+       &13 e, &12 e, &11 e,
+         2 e,   3 e,   4 e,
+         7 e,   6 e,   5 e,
+  drop
   #+end_src
 
 * set_shield
@@ -1130,11 +1114,11 @@
   : set_shield ( M-Nr -- M-Nr' )
       4 /mod 2* firstShield +       \ calculate shieldnr and motornr
       dup lastShield >              \ shieldnr too big?
-      IF
+      if
           ShieldError throw
-      ELSE
+      else
           shield !
-      THEN
+      then
   ;
   #+end_src
 
@@ -1168,11 +1152,13 @@
   : init
       i2c.init.default
       lastShield firstShield
-      DO
+      do
           I shield ! 3 prescaler!
-      LOOP
+      loop
   ;
   #+end_src
+
+
 
 * .regs for debug                     :no:
   #+begin_src forth :tangle no
@@ -1218,3 +1204,463 @@
   : rl ( - n n n ) release ;
   : hld ( - n n ) hold ;
   #+end_src
+
+
+* interrupt service routines
+
+*** an increasing ticker              :no:
+    - TIMER_0 example
+    - requires
+      in application master file
+        .set WANT_TIMER_COUNTER_0 = 1
+      from device.frt
+        TIMER0_OVFAddr
+    - provides
+      timer0.tick -- increasing ticker
+    #+begin_src forth :tangle no
+    variable timer0.tick
+
+    : timer0.isr
+      1 timer0.tick +!
+    ;
+
+    : timer0.init ( preload -- )
+       0 timer0.tick !
+       TCNT0 c! \ preload
+       ['] timer0.isr TIMER0_OVFAddr int!
+    ;
+
+    \ some settings for 8bit timer to
+    \ get 1ms ticks
+    \ f_cpu  prescaler preload
+    \  16MHz   64       6
+    \   8MHz   64     131
+
+    : timer0.start
+       0 timer0.tick !
+       %00000011 TCCR0B c! \ prescaler 64
+       %00000001 TIMSK0 c! \ enable overflow interrupt
+    ;
+
+    : timer0.stop
+      %00000000 TCCR0B c! \ stop timer
+      %00000000 TIMSK0 c! \ stop interrupt
+    ;
+    #+end_src
+
+* servo
+
+*** servo.frt
+    #+begin_src forth :tangle servo.frt
+    \ This program creates a pwm signal on OC1A/PB1 to
+    \ drive a standard servo with a pulse between 1ms and 2ms
+    \ every 20ms.  The pulse width is determined by the voltage
+    \ at the ADC0 pin (0-5 volts), which can be controlled by
+    \ a potentiometer.  The pulse starts at 1.5ms.  Entering pwm
+    \ allows the voltage to control the pulse.  Pressing any
+    \ key sets the pulse to 1.5ms, ceases control of the pulse,
+    \ and returns the ok prompt.
+
+    \ Two useful words
+    \ or! ors value to contents of RAM address
+    \ 只操作一个字节
+    : or! ( n addr -- )
+      dup c@ rot or swap c! ;
+
+    \ 先写高字节
+    \ high! is like ! but writes high byte first!
+    : high! ( n addr -- )
+        over 8 rshift over 1+ c! c!
+    ;
+
+    decimal
+
+    : pen-up ( -> )
+      1350 OCR1A high!
+    ;
+
+    : pen-down ( -> )
+      1105 OCR1A high!
+    ;
+
+    : servo-init
+        1 1 lshift DDRB or!
+        20000 ICR1 high!
+
+        1 7 lshift
+        1 1 lshift or
+        TCCR1A c!
+
+        1 4 lshift
+        1 1 lshift or
+        TCCR1B c!
+
+        pen-up
+    ;
+    #+end_src
+
+*** back up                           :no:
+    #+begin_src forth :tangle no
+    \ PWM init
+    \ Initialize Timer1
+    \ Set OC1A/PB1 for output
+    \ 把 OC1A/PB1 设置成输出模式
+    \ C 语言：
+    \ DDRB |= (1 <<  PB1)
+    1 1 lshift DDRB or!
+
+    \ : servo-init
+    \   1 1 lshift DDRB or!
+    \ ;
+
+
+    \ mode 10
+    \ datasheet pg 133
+    \ Set TOP to 10000 This is based on a prescale factor of 8
+    \ and a clock frequency of 8000000.
+    \ frescale = 8
+    \ 频率 8MHz
+    \ 如果是 16M Hz，则预分频应该设置为多少？
+    \
+    \ ICR1 是一个 16 位的寄存器
+    20000 ICR1 high!
+
+    \ 16000000/(2*8*20000) = 50 Hz, 因此, 周期 = 20ms
+
+    \ ------------------------------------------------------
+
+    \ datasheet Table 16-3
+    \ Clear OC1A/OC1B on Compare Match when up-
+    \ counting. Set OC1A/OC1B on Compare Match when
+    \ downcounting.
+    \
+    \ Phase correct PWM mode, OC1A high on down match
+    \  CLK/8 prescaler
+    \  OC1A 会变成高电压，当 TCNT1 向下数, 且 TCNT1=OCR1A 时。
+    \  ICR1 被用来定义 TOP 值
+    \  prescaler 决定了 pwm 的周期，这个例子要求 20ms 周期
+    \ TCCR1A = (1<<COM1A1)|(1<<WGM11);
+    1 7 lshift    \ COM1A1 位
+    1 1 lshift or \ WMG11 位
+    TCCR1A c!
+    \ 只是写 TCCR1A 就足够设置参数了吗？
+    \ 对照 datasheet 和别的 C 代码
+    \ 图在 pg 127
+
+    \ ------------------------------------------------------
+
+    \ TCCR1B = (1<<WGM13)|(1<<CS11);
+    1 4 lshift     \ WGM13 位
+    1 1 lshift or  \ CS11 位
+    TCCR1B c!
+
+    \ 上面是写 TCCR1B 寄存器
+
+    \ ------------------------------------------------------
+
+    \ 先把 750 写进 OCR1A 里，可以得到一个 1.5ms 宽度的脉冲？需要计算
+    \ Sets the compare value for a 1.5ms pulse
+    \ 750 OCR1A high!
+
+    \ ------------------------------------------------------
+
+    \ 往 OCR1A 里写数据就可以改变脉冲宽度，如:
+    \ 750 OCR1A high!
+
+
+    \ 1350 OCR1A high!
+
+    \ 1200 OCR1A high!
+
+    \ 1 7 lshift  1 1 lshift or TCCR1A c!
+
+    \ 1 4 lshift 1 1 lshift or TCCR1B c!
+    #+end_src
+
+
+* lib/forth2012/facility/ms.frt
+  #+begin_src forth :tangle ada-shield.frt
+  \ a trivial multitasking friendly ms
+  : ms 0 ?do pause 1ms loop ;
+  #+end_src
+
+
+* draw
+
+*** note 旋轉
+    - 兩輪同時反向旋轉
+      假設 pwm 一定時
+      旋轉角度與旋轉時間成正比
+      設其值爲 time/angle
+      angle->time 就是
+      time/angle *
+      其中
+      time 的單位是 ms
+      [time 用小單位 這樣 time/angle 就有可能是大整數]
+      angle 的單位是 角度
+      即 360 度爲一週
+
+*** new
+    - 三號輪子比二號輪子快
+    #+begin_src forth :tangle new.frt
+    variable time-pwm:help-var
+
+    : time-pwm:turn-left ( time pwm -> [move] )
+        time-pwm:help-var !
+        forward time-pwm:help-var @ 15 * 14 / 2 m-run
+        backward time-pwm:help-var @ 3 m-run
+        ms
+        release 2 m-run
+        release 3 m-run
+    ;
+
+    : time-pwm:turn-right ( time pwm -> [move] )
+        time-pwm:help-var !
+        backward time-pwm:help-var @ 15 * 14 / 2 m-run
+        forward time-pwm:help-var @ 3 m-run
+        ms
+        release 2 m-run
+        release 3 m-run
+    ;
+
+    : time-pwm:forward ( time pwm -> [move] )
+        time-pwm:help-var !
+        forward time-pwm:help-var @ 15 * 14 / 2 m-run
+        forward time-pwm:help-var @ 3 m-run
+        ms
+        release 2 m-run
+        release 3 m-run
+    ;
+
+    : time-pwm:backward ( time pwm -> [move] )
+        time-pwm:help-var !
+        backward time-pwm:help-var @ 15 * 14 / 2 m-run
+        backward time-pwm:help-var @ 3 m-run
+        ms
+        release 2 m-run
+        release 3 m-run
+    ;
+
+    variable pwm-for-360
+    \ 1530 pwm-for-360 ! \ 80
+    \ 1430 pwm-for-360 ! \ 8.37
+    1390 pwm-for-360 ! \ 8.37
+    1380 pwm-for-360 ! \ 8.37
+    1385 pwm-for-360 ! \ 8.37
+
+    \ 360 左轉角
+
+    : 左轉角 ( angle -> [move] )
+        5 *
+        pwm-for-360 @
+        time-pwm:turn-left
+    ;
+
+    : 右轉角 ( angle -> [move] )
+        5 *
+        pwm-for-360 @
+        time-pwm:turn-right
+    ;
+
+    : 步前進 ( step -> [move] )
+        200 *
+        pwm-for-360 @ time-pwm:forward
+    ;
+
+    : 步後退 ( step -> [move] )
+        200 *
+        pwm-for-360 @ time-pwm:backward
+    ;
+
+    : 提筆 ( -> )
+      300 ms
+      1350 OCR1A high!
+      400 ms
+    ;
+
+    : 落筆 ( -> )
+      300 ms
+      1105 OCR1A high!
+      400 ms
+    ;
+
+    : servo-init
+        1 1 lshift DDRB or!
+        20000 ICR1 high!
+
+        1 7 lshift
+        1 1 lshift or
+        TCCR1A c!
+
+        1 4 lshift
+        1 1 lshift or
+        TCCR1B c!
+
+        提筆
+    ;
+
+    : 微秒稍等 ms ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    : 口字旁
+      4 步前進
+      落筆     2 步後退
+      提筆     2 步前進
+      90 右轉角
+      落筆     2 步前進
+      90 右轉角
+               2 步前進
+      提筆
+      90 右轉角
+               2 步前進
+      90 右轉角 300 微秒稍等
+      90 右轉角
+      落筆
+               2 步前進
+      提筆
+    ;
+
+    : 人字頭
+      70 左轉角
+               2 步前進
+      30 右轉角
+      落筆     2 步前進
+      300 微秒稍等
+      60 右轉角
+               2 步前進
+      提筆
+               2 步後退
+    ;
+
+    : 寫個一
+      110 右轉角
+               2 步前進
+      落筆
+      145 左轉角
+               2 步前進
+      提筆
+               2 步後退
+    ;
+
+    : 口字底
+      90 右轉角
+               1 步前進
+      落筆
+               2 步前進
+      提筆
+               2 步後退
+      90 左轉角
+      落筆
+               2 步前進
+      90 右轉角
+               2 步前進
+      300 微秒稍等
+      90 右轉角
+      落筆
+               2 步前進
+      提筆
+               2 步後退
+               1 步後退
+      90 右轉角
+
+    ;
+
+    : 哈
+      口字旁
+      人字頭
+      寫個一
+      口字底
+    ;
+
+
+    : 短橫
+      20 右轉角
+               4 步前進
+      70 右轉角
+      落筆
+               2 步前進
+      提筆
+    ;
+
+    : 豎
+               1 步後退
+      落筆
+      90 右轉角
+               3 步前進
+      提筆
+    ;
+
+    : 底部長橫
+      90 右轉角
+               2 步前進
+      落筆
+               4 步後退
+      提筆
+      90 右轉角
+    ;
+
+    : 工
+      短橫
+      豎
+      底部長橫
+    ;
+
+
+    : 中部長橫
+            3 步前進
+      落筆
+      90 右轉角
+            4 步前進
+      提筆
+            2 步後退
+      90 左轉角
+    ;
+
+    : 丿
+            1 步前進
+      落筆
+            2 步後退
+      45 右轉角
+            2 步後退
+      提筆
+            2 步前進
+    ;
+
+    : 乀
+      89 左轉角
+      落筆
+            3 步後退
+      提筆
+    ;
+
+    : 大
+      中部長橫
+      丿
+      乀
+    ;
+
+    哈 工 大
+    #+end_src
+
+
+* note memory-allocation
+  - 'dp' as 'here' for flash
+  - 'here' as 'here' for rom
+  - 'ehere' as 'here' for eprom
+  - http://amforth.sourceforge.net/TG/AVR8.html#memory-allocation
